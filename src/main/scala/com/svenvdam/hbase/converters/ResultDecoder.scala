@@ -24,9 +24,10 @@ object ResultDecoder {
               lst.head.values + (Column(family, qualifier) -> CellValue(value))
             ) :: lst
         }
-        .map(acc => (acc.timestamp, decoder.decode(Row(row, acc.values))))
+        .map(acc => (decoder.decode(Row(row, acc.values)), acc.timestamp))
         .flatMap {
-          case (timestamp, Some(value)) => List(DecodedValue(value, timestamp))
+          case (Some(value), timestamp) => List(DecodedValue(value, timestamp))
+          case _ => List.empty
         }
     }
 
@@ -34,7 +35,8 @@ object ResultDecoder {
   }
 
   implicit class ResultScannerOps(res: Iterable[Result]) {
-    def as[T](implicit decoder: HBaseDecoder[T]): Iterable[Iterable[DecodedValue[T]]] = res.map(_.as[T])
+    def as[T](implicit decoder: HBaseDecoder[T]): Iterable[Iterable[DecodedValue[T]]] =
+      res.map(_.as[T])
   }
 
   implicit class FutureResultOps(f: Future[Result]) {
