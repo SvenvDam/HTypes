@@ -1,5 +1,5 @@
 package com.svenvdam.hbase.model
 
-private[hbase] case class Row(key: String, values: Map[Column, Value]) {
+case class Row(key: String, values: Map[Column, CellValue]) {
   def getKeyB: Array[Byte] = key.getBytes
 }

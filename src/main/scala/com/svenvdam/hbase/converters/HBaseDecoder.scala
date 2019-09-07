@@ -1,7 +1,7 @@
 package com.svenvdam.hbase.converters
 
-import org.apache.hadoop.hbase.client.Result
+import com.svenvdam.hbase.model.Row
 
 trait HBaseDecoder[T] {
-  def decode(result: Result): T
+  def decode(row: Row): Option[T]
 }

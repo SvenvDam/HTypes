@@ -1,6 +1,6 @@
 package com.svenvdam.hbase.converters
 
-import com.svenvdam.hbase.model.Value
+import com.svenvdam.hbase.model.CellValue
 import org.apache.hadoop.hbase.client.{Put, Delete}
 
 object ObjectEncoder {
@@ -8,10 +8,12 @@ object ObjectEncoder {
     val row = encoder.encode(t)
     row.values
       .foldLeft(new Put(row.getKeyB)) {
-        case (put, (col, Value(v, Some(time)))) => put.addColumn(col.getFamilyB, col.getQualifierB, time, v.toString.getBytes)
-        case (put, (col, Value(v, None))) => put.addColumn(col.getFamilyB, col.getQualifierB, v.toString.getBytes)
-      }
+        case (put, (col, CellValue(v, Some(time)))) =>
+          put.addColumn(col.getFamilyB, col.getQualifierB, time, v)
 
+        case (put, (col, CellValue(v, None))) =>
+          put.addColumn(col.getFamilyB, col.getQualifierB, v)
+      }
   }
 
   implicit def toDelete[T](t: T)(implicit encoder: HBaseEncoder[T]): Delete = {
