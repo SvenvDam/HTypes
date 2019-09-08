@@ -1,6 +1,6 @@
-package com.svenvdam.hbase.async
+package com.svenvandam.htypes.async
 
-import com.svenvdam.hbase.BaseHbaseTest
+import com.svenvandam.htypes.BaseHbaseTest
 import org.apache.hadoop.hbase.client.{Scan, Put}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
@@ -15,15 +15,14 @@ class AsyncTableTest extends BaseHbaseTest {
     import scala.concurrent.ExecutionContext.Implicits.global
 
     val table = getTable()
-    val put = new Put("r1".getBytes).addColumn("cf1".getBytes, "c1".getBytes, "v1".getBytes)
+    val put = new Put("r1").addColumn("cf1", "c1", "v1")
     table.put(put)
-    val scan = new Scan().addColumn("cf1".getBytes, "c1".getBytes)
-
+    val scan = new Scan().addColumn("cf1", "c1")
 
     val scanResult = Await.result(table.scanAsync(scan), 3 seconds)
     val res = scanResult.asScala.head
 
     Bytes.toString(res.getRow) shouldBe "r1"
-    Bytes.toString(res.getValue("cf1".getBytes, "c1".getBytes)) shouldBe "v1"
+    Bytes.toString(res.getValue("cf1", "c1")) shouldBe "v1"
   }
 }

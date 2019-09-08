@@ -1,11 +1,11 @@
-package com.svenvdam.hbase.converters
+package com.svenvandam.htypes.converters
 
 import java.util
-import com.svenvdam.hbase.model.CellValue
+import com.svenvandam.htypes.model.CellValue
 import org.apache.hadoop.hbase.client.{Put, Delete}
 import scala.jdk.CollectionConverters._
 
-object ObjectEncoder {
+trait MutationConverters {
   implicit def toPut[T](t: T)(implicit encoder: HBaseEncoder[T]): Put = {
     val row = encoder.encode(t)
     row.values
@@ -36,3 +36,5 @@ object ObjectEncoder {
   implicit def toDeletes[T](lst: Iterable[T])(implicit encoder: HBaseEncoder[T]): util.List[Delete] =
     new util.LinkedList(lst.map(toDelete(_)(encoder)).toList.asJava)
 }
+
+object MutationConverters extends MutationConverters

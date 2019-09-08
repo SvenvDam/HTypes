@@ -1,15 +1,14 @@
-package com.svenvdam.hbase.converters
+package com.svenvandam.htypes.converters
 
-import com.svenvdam.hbase.BaseHbaseTest
-import com.svenvdam.hbase.model.{CellValue, Row, Column}
-import org.apache.hadoop.hbase.client.{Put, Delete, Get, Scan}
+import com.svenvandam.htypes.BaseHbaseTest
+import com.svenvandam.htypes.model.{CellValue, Row, Column}
+import org.apache.hadoop.hbase.client.{Put, Get}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
-import scala.jdk.CollectionConverters._
 
-class ObjectEncoderTest extends BaseHbaseTest {
-  import ObjectEncoder._
-  import ObjectEncoderTest._
+class MutationConvertersTest extends BaseHbaseTest {
+  import MutationConverters._
+  import MutationConvertersTest._
 
   implicit val userEncoder = new HBaseEncoder[User] {
     override def encode(user: User): Row =
@@ -95,6 +94,6 @@ class ObjectEncoderTest extends BaseHbaseTest {
   }
 }
 
-object ObjectEncoderTest {
+object MutationConvertersTest {
   case class User(id: String, name: String, age: Int)
 }

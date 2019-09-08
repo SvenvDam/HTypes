@@ -1,7 +1,7 @@
-package com.svenvdam.hbase.converters
+package com.svenvandam.htypes.converters
 
-import com.svenvdam.hbase.BaseHbaseTest
-import com.svenvdam.hbase.model.{DecodedValue, Row, Column}
+import com.svenvandam.htypes.BaseHbaseTest
+import com.svenvandam.htypes.model.{DecodedValue, Row, Column}
 import org.apache.hadoop.hbase.KeyValue
 import org.apache.hadoop.hbase.client.{Scan, Result, Put, Get}
 import org.apache.hadoop.hbase.util.Bytes
@@ -10,9 +10,9 @@ import scala.concurrent.{Future, Await}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class ResultDecoderTest extends BaseHbaseTest {
-  import ResultDecoder._
-  import ResultDecoderTest._
+class ResultConvertersTest extends BaseHbaseTest {
+  import ResultConverters._
+  import ResultConvertersTest._
 
   implicit val userDecoder = new HBaseDecoder[User] {
     def decode(row: Row): Option[User] = for {
@@ -97,6 +97,6 @@ class ResultDecoderTest extends BaseHbaseTest {
   }
 }
 
-object ResultDecoderTest {
+object ResultConvertersTest {
   case class User(id: String, name: String, age: Int)
 }

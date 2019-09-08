@@ -1,4 +1,4 @@
-package com.svenvdam.hbase.model
+package com.svenvandam.htypes.model
 
 case class Column(family: String, qualifier: String) {
   def getFamilyB: Array[Byte] = family.getBytes

@@ -1,9 +1,9 @@
-package com.svenvdam.hbase.async
+package com.svenvandam.htypes.async
 
 import org.apache.hadoop.hbase.client._
 import scala.concurrent.{Future, ExecutionContext, blocking}
 
-object AsyncTable {
+trait AsyncTable {
 
   implicit class TableOps(table: Table) {
 
@@ -23,3 +23,5 @@ object AsyncTable {
       }
     }
 }
+
+object AsyncTable extends AsyncTable

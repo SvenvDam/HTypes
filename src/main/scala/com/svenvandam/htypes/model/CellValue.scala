@@ -1,3 +1,3 @@
-package com.svenvdam.hbase.model
+package com.svenvandam.htypes.model
 
 case class CellValue(value: Array[Byte], timestamp: Option[Long] = None)

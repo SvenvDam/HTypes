@@ -1,6 +1,6 @@
-package com.svenvdam.hbase.converters
+package com.svenvandam.htypes.converters
 
-import com.svenvdam.hbase.model.{CellValue, DecodedValue, Row, Column}
+import com.svenvandam.htypes.model.{CellValue, DecodedValue, Row, Column}
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.hadoop.hbase.CellUtil
 import org.apache.hadoop.hbase.client.{Result, ResultScanner}
@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.util.Bytes
 import scala.concurrent.{Future, ExecutionContext}
 import scala.jdk.CollectionConverters._
 
-object ResultDecoder extends LazyLogging {
+trait ResultConverters {
   implicit class ResultOps(res: Result) {
     def as[T](implicit decoder: HBaseDecoder[T]): Iterable[DecodedValue[T]] = {
       val row = Bytes.toString(res.getRow)
@@ -52,3 +52,5 @@ object ResultDecoder extends LazyLogging {
       .map(_.as[T])
   }
 }
+
+object ResultConverters extends ResultConverters

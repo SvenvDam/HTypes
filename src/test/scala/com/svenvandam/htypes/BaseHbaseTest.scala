@@ -1,4 +1,4 @@
-package com.svenvdam.hbase
+package com.svenvandam.htypes
 
 import java.util.UUID
 import com.typesafe.scalalogging.LazyLogging
