@@ -2,7 +2,6 @@ language: scala
 matrix:
   include:
   - scala: 2.13.0
+    env: HBASE_TMP_DIR="$HOME/.tmp"
     script:
-    - sbt clean
-    - sbt test
-    - sbt compile
+    - sbt clean test compile

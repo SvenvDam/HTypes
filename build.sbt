@@ -1,4 +1,4 @@
-name := "ScalaHbase"
+name := "HTypes"
 
 version := "0.1"
 
