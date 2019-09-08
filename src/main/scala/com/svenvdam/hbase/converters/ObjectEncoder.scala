@@ -1,7 +1,9 @@
 package com.svenvdam.hbase.converters
 
+import java.util
 import com.svenvdam.hbase.model.CellValue
 import org.apache.hadoop.hbase.client.{Put, Delete}
+import scala.jdk.CollectionConverters._
 
 object ObjectEncoder {
   implicit def toPut[T](t: T)(implicit encoder: HBaseEncoder[T]): Put = {
@@ -16,10 +18,21 @@ object ObjectEncoder {
       }
   }
 
+  implicit def toPuts[T](lst: Iterable[T])(implicit encoder: HBaseEncoder[T]): util.List[Put] =
+    lst.map(toPut(_)(encoder)).toList.asJava
+
+  // TODO: what if you want to delete columns matching a specific value?
   implicit def toDelete[T](t: T)(implicit encoder: HBaseEncoder[T]): Delete = {
     val row = encoder.encode(t)
     row.values.foldLeft(new Delete(row.getKeyB)) {
-      case (del, (col, _)) => del.addColumn(col.getFamilyB, col.getQualifierB)
+      case (del, (col, CellValue(_, Some(time)))) =>
+        del.addColumn(col.getFamilyB, col.getQualifierB, time)
+
+      case (del, (col, CellValue(_, None))) =>
+        del.addColumn(col.getFamilyB, col.getQualifierB)
     }
   }
+
+  implicit def toDeletes[T](lst: Iterable[T])(implicit encoder: HBaseEncoder[T]): util.List[Delete] =
+    new util.LinkedList(lst.map(toDelete(_)(encoder)).toList.asJava)
 }

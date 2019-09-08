@@ -14,8 +14,6 @@ class ResultDecoderTest extends BaseHbaseTest {
   import ResultDecoder._
   import ResultDecoderTest._
 
-  implicit def strToBytes(str: String): Array[Byte] = str.getBytes
-
   implicit val userDecoder = new HBaseDecoder[User] {
     def decode(row: Row): Option[User] = for {
       name <- row.values.get(Column("profile", "name"))
