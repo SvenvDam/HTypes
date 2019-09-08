@@ -5,4 +5,5 @@ matrix:
   - scala: 2.13.0
     env: HBASE_TMP_DIR="$HOME/.tmp"
     script:
+    - mkdir $HOME/.tmp
     - sbt clean test compile
