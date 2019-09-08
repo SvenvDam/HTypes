@@ -3,7 +3,7 @@ package com.svenvdam.hbase.converters
 import com.svenvdam.hbase.BaseHbaseTest
 import com.svenvdam.hbase.model.{DecodedValue, Row, Column}
 import org.apache.hadoop.hbase.KeyValue
-import org.apache.hadoop.hbase.client.Result
+import org.apache.hadoop.hbase.client.{Scan, Result, Put, Get}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
 import scala.concurrent.{Future, Await}
@@ -13,6 +13,8 @@ import scala.concurrent.duration._
 class ResultDecoderTest extends BaseHbaseTest {
   import ResultDecoder._
   import ResultDecoderTest._
+
+  implicit def strToBytes(str: String): Array[Byte] = str.getBytes
 
   implicit val userDecoder = new HBaseDecoder[User] {
     def decode(row: Row): Option[User] = for {
@@ -27,8 +29,8 @@ class ResultDecoderTest extends BaseHbaseTest {
 
   test("it should construct a user from a Result") {
     val kv = Array(
-      new KeyValue("abc".getBytes, "profile".getBytes, "name".getBytes, 1, "Sven".getBytes),
-      new KeyValue("abc".getBytes, "profile".getBytes, "age".getBytes, 1, "24".getBytes),
+      new KeyValue("abc", "profile", "name", 1, "Sven"),
+      new KeyValue("abc", "profile", "age", 1, "24"),
     )
 
     new Result(kv).as[User] shouldBe List(DecodedValue(User("abc", "Sven", 24), 1))
@@ -36,8 +38,8 @@ class ResultDecoderTest extends BaseHbaseTest {
 
   test("it should construct a user from a Future[Result]") {
     val kv = Array(
-      new KeyValue("abc".getBytes, "profile".getBytes, "name".getBytes, 1, "Sven".getBytes),
-      new KeyValue("abc".getBytes, "profile".getBytes, "age".getBytes, 1, "24".getBytes),
+      new KeyValue("abc", "profile", "name", 1, "Sven"),
+      new KeyValue("abc", "profile", "age", 1, "24"),
     )
 
     val result = Await.result(Future(new Result(kv)).as[User], 1 second)
@@ -46,7 +48,7 @@ class ResultDecoderTest extends BaseHbaseTest {
 
   test("it should handle missing data in Result") {
     val kv = Array(
-      new KeyValue("abc".getBytes, "profile".getBytes, "name".getBytes, 1, "Sven".getBytes),
+      new KeyValue("abc", "profile", "name", 1, "Sven"),
     )
 
     new Result(kv).as[User] shouldBe List.empty
@@ -54,9 +56,9 @@ class ResultDecoderTest extends BaseHbaseTest {
 
   test("it should handle updated values in Result") {
     val kv = Array(
-      new KeyValue("abc".getBytes, "profile".getBytes, "age".getBytes, 3, "25".getBytes),
-      new KeyValue("abc".getBytes, "profile".getBytes, "age".getBytes, 2, "24".getBytes),
-      new KeyValue("abc".getBytes, "profile".getBytes, "name".getBytes, 1, "Sven".getBytes),
+      new KeyValue("abc", "profile", "age", 3, "25"),
+      new KeyValue("abc", "profile", "age", 2, "24"),
+      new KeyValue("abc", "profile", "name", 1, "Sven"),
     )
 
     new Result(kv).as[User] shouldBe List(
@@ -66,15 +68,37 @@ class ResultDecoderTest extends BaseHbaseTest {
   }
 
   test("it should get one user using Get") {
-    ???
+    val table = getTable(families = Array("profile"))
+    table.put(
+      new Put("abc")
+        .addColumn("profile", "name", 1, "Sven")
+        .addColumn("profile", "age", 1, "24")
+    )
+
+    table.get(new Get("abc")).as[User] shouldBe List(DecodedValue(User("abc", "Sven", 24), 1))
   }
 
   test("it should construct multiple users using Scan") {
-    ???
+    val table = getTable(families = Array("profile"))
+    table.put(
+      new Put("abc")
+        .addColumn("profile", "name", 1, "Sven")
+        .addColumn("profile", "age", 1, "24")
+    )
+    table.put(
+      new Put("xyz")
+        .addColumn("profile", "name", 1, "Jack")
+        .addColumn("profile", "age", 1, "23")
+    )
+
+    table.getScanner(new Scan()).as[User] shouldBe List(
+      List(DecodedValue(User("abc", "Sven", 24), 1)),
+      List(DecodedValue(User("xyz", "Jack", 23), 1))
+    )
+
   }
 }
 
 object ResultDecoderTest {
   case class User(id: String, name: String, age: Int)
-
 }

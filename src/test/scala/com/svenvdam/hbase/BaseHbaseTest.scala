@@ -28,8 +28,8 @@ trait BaseHbaseTest extends FunSuiteLike with BeforeAndAfterAll with LazyLogging
     logger.info("HBase test cluster stopped.")
   }
 
-  def getTable(families: Array[String] = Array("cf1")): Table = {
+  def getTable(families: Array[String] = Array("cf1"), maxValues: Int = 10): Table = {
     val name = UUID.randomUUID().toString
-    hBaseUtility.createTable(TableName.valueOf(name), families.map(_.getBytes), 100)
+    hBaseUtility.createTable(TableName.valueOf(name), families.map(_.getBytes), maxValues)
   }
 }
