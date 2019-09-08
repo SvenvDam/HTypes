@@ -1,0 +1,8 @@
+language: scala
+matrix:
+  include:
+  - scala: 2.13.0
+    script:
+    - sbt clean
+    - sbt test
+    - sbt compile
