@@ -3,7 +3,8 @@ sudo: true
 matrix:
   include:
   - scala: 2.13.0
-    env: HBASE_TMP_DIR="$HOME/.tmp"
+    env: HBASE_TMP_DIR="$TRAVIS_BUILD_DIR/.tmp"
     script:
-    - mkdir $HOME/.tmp
+    - env
+    - mkdir $TRAVIS_BUILD_DIR/.tmp
     - sbt clean test compile
