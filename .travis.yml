@@ -1,4 +1,5 @@
 language: scala
+sudo: true
 matrix:
   include:
   - scala: 2.13.0
