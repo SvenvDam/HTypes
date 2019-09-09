@@ -2,9 +2,10 @@ package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.model.{CellValue, Row, Column}
-import org.apache.hadoop.hbase.client.{Put, Get}
+import org.apache.hadoop.hbase.client.{Put, Get, Scan}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
+import scala.jdk.CollectionConverters._
 
 class QuerySyntaxTest extends BaseHbaseTest {
   import QuerySyntax._
@@ -19,6 +20,13 @@ class QuerySyntaxTest extends BaseHbaseTest {
           Column("profile", "age") -> CellValue(user.age.toString, None),
         )
       )
+  }
+
+  implicit val userColumnGetter = new HBaseColumnGetter[User] {
+    def getColumns = Set(
+      Column("profile", "name"),
+      Column("profile", "age")
+    )
   }
 
   test("it should encode a User to a Put") {
@@ -52,6 +60,35 @@ class QuerySyntaxTest extends BaseHbaseTest {
     Bytes.toString(result.getValue("profile", "name")) shouldBe null
     Bytes.toString(result.getValue("profile", "age")) shouldBe null
     Bytes.toString(result.getValue("profile", "col")) shouldBe "xx"
+  }
+
+  test("it should add user fields to a Scan") {
+    val table = getTable(families = Array("profile"))
+    table.put(
+      new Put("abc")
+        .addColumn("profile", "name", "Sven")
+        .addColumn("profile", "age", "24")
+    )
+
+    val scan = new Scan().from[User]
+
+    val result = table.getScanner(scan).asScala.head
+    result.getValue("profile", "name") shouldBe "Sven".getBytes
+    result.getRow shouldBe "abc".getBytes
+  }
+
+  test("it should add user fields to a Get") {
+    val table = getTable(families = Array("profile"))
+    table.put(
+      new Put("abc")
+        .addColumn("profile", "name", "Sven")
+        .addColumn("profile", "age", "24")
+    )
+
+    val get = new Get("abc").from[User]
+
+    val result = table.get(get)
+    result.getValue("profile", "name") shouldBe "Sven".getBytes
   }
 }
 
