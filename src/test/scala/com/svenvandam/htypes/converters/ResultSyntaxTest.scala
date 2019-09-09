@@ -10,9 +10,9 @@ import scala.concurrent.{Future, Await}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class ResultConvertersTest extends BaseHbaseTest {
-  import ResultConverters._
-  import ResultConvertersTest._
+class ResultSyntaxTest extends BaseHbaseTest {
+  import ResultSyntax._
+  import ResultSyntaxTest._
 
   implicit val userDecoder = new HBaseDecoder[User] {
     def decode(row: Row): Option[User] = for {
@@ -97,6 +97,6 @@ class ResultConvertersTest extends BaseHbaseTest {
   }
 }
 
-object ResultConvertersTest {
+object ResultSyntaxTest {
   case class User(id: String, name: String, age: Int)
 }

@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.util.Bytes
 import scala.concurrent.{Future, ExecutionContext}
 import scala.jdk.CollectionConverters._
 
-trait ResultConverters {
+trait ResultSyntax {
   implicit class ResultOps(res: Result) {
     def as[T](implicit decoder: HBaseDecoder[T]): Iterable[DecodedValue[T]] = {
       val row = Bytes.toString(res.getRow)
@@ -53,4 +53,4 @@ trait ResultConverters {
   }
 }
 
-object ResultConverters extends ResultConverters
+object ResultSyntax extends ResultSyntax
