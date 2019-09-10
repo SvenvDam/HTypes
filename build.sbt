@@ -11,6 +11,8 @@ scalacOptions ++= Seq(
   "-language:postfixOps"
 )
 
+parallelExecution in Test := false
+
 libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-common" % hadoopVersion,
   "org.apache.hbase" % "hbase-client" % hBaseVersion,
