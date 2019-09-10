@@ -20,8 +20,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
 
   "org.scalatest" %% "scalatest" % "3.0.8" % Test,
-  "org.scalacheck" %% "scalacheck" % "1.14.0" % Test,
-  "org.mockito" % "mockito-all" % "1.10.19" % Test,
 
   "org.apache.hbase" % "hbase-server" % hBaseVersion % Test,
   "org.apache.hadoop" % "hadoop-hdfs" % hadoopVersion % Test,
