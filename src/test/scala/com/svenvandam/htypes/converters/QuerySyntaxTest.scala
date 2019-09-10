@@ -2,7 +2,7 @@ package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.model.{CellValue, Row, Column}
-import org.apache.hadoop.hbase.client.{Put, Get, Scan}
+import org.apache.hadoop.hbase.client.{Scan, Put, Get}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
 import scala.jdk.CollectionConverters._
@@ -22,7 +22,7 @@ class QuerySyntaxTest extends BaseHbaseTest {
       )
   }
 
-  implicit val userColumnGetter = new HBaseColumnGetter[User] {
+  implicit val userClassEncoder = new HBaseClassEncoder[User] {
     def getColumns = Set(
       Column("profile", "name"),
       Column("profile", "age")

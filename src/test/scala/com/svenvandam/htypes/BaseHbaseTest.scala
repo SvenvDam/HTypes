@@ -3,7 +3,7 @@ package com.svenvandam.htypes
 import java.util.UUID
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.hadoop.hbase.client.Table
-import org.apache.hadoop.hbase.{TableName, HBaseTestingUtility, HBaseCommonTestingUtility}
+import org.apache.hadoop.hbase.{TableName, HBaseTestingUtility}
 import org.scalatest.{BeforeAndAfterAll, FunSuiteLike}
 
 trait BaseHbaseTest extends FunSuiteLike with BeforeAndAfterAll with LazyLogging {

@@ -1,10 +1,13 @@
 language: scala
-sudo: true
-matrix:
-  include:
-  - scala: 2.13.0
-    env: HBASE_TMP_DIR="$TRAVIS_BUILD_DIR/.tmp"
-    script:
-    - env
-    - mkdir $TRAVIS_BUILD_DIR/.tmp
-    - sbt clean test compile
+
+cache:
+  directories:
+  - $HOME/.m2/repository
+  - $HOME/.sbt
+  - $HOME/.ivy2
+
+scala:
+- 2.13.0
+
+script:
+- sbt ++$TRAVIS_SCALA_VERSION clean test

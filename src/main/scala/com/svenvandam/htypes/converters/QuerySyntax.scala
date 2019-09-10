@@ -5,7 +5,7 @@ import org.apache.hadoop.hbase.client.{Scan, Put, Delete, Get}
 
 trait QuerySyntax {
   implicit class GetOps(get: Get) {
-    def from[T](implicit columnGetter: HBaseColumnGetter[T]): Get =
+    def from[T](implicit columnGetter: HBaseClassEncoder[T]): Get =
       columnGetter
         .getColumns
         .foldLeft(get) {
@@ -14,7 +14,7 @@ trait QuerySyntax {
   }
 
   implicit class ScanOps(scan: Scan) {
-    def from[T](implicit columnGetter: HBaseColumnGetter[T]): Scan =
+    def from[T](implicit columnGetter: HBaseClassEncoder[T]): Scan =
       columnGetter
         .getColumns
         .foldLeft(scan) {
