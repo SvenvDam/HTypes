@@ -4,7 +4,7 @@ version := "0.1"
 
 scalaVersion := "2.13.0"
 
-val hBaseVersion = "2.0.6"
+val hBaseVersion = "2.2.0"
 val hadoopVersion = "2.8.5"
 
 scalacOptions ++= Seq(
@@ -25,5 +25,5 @@ libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-hdfs" % hadoopVersion % Test,
   "org.apache.hbase" % "hbase-hadoop-compat" % hBaseVersion % Test,
   "org.apache.hbase" % "hbase-hadoop2-compat" % hBaseVersion % Test,
-  "org.apache.hbase" % "hbase-testing-util" % hBaseVersion % Test,
+  "org.apache.hbase" % "hbase-testing-util" % hBaseVersion % Test
 )

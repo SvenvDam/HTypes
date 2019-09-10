@@ -17,7 +17,7 @@ class QuerySyntaxTest extends BaseHbaseTest {
         user.id,
         Map(
           Column("profile", "name") -> CellValue(user.name, None),
-          Column("profile", "age") -> CellValue(user.age.toString, None),
+          Column("profile", "age") -> CellValue(user.age.toString, None)
         )
       )
   }
