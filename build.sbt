@@ -17,6 +17,7 @@ libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-common" % hadoopVersion,
   "org.apache.hbase" % "hbase-client" % hBaseVersion,
 
+  "org.typelevel" %% "cats-core" % "2.0.0",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
 
   "org.scalatest" %% "scalatest" % "3.0.8" % Test,

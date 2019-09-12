@@ -6,9 +6,8 @@ import org.apache.hadoop.hbase.{CellUtil, Cell}
 import org.apache.hadoop.hbase.client.{Result, ResultScanner}
 import org.apache.hadoop.hbase.util.Bytes
 import scala.concurrent.{Future, ExecutionContext}
-import scala.jdk.CollectionConverters._
 
-trait ResultSyntax extends LazyLogging {
+trait ResultSyntax extends ScalaConverter with LazyLogging {
 
   private implicit val cellOrdering = new Ordering[Cell] {
     override def compare(x: Cell, y: Cell) =
@@ -47,7 +46,7 @@ trait ResultSyntax extends LazyLogging {
 
   implicit class ResultScannerOps(res: ResultScanner) {
     def as[T](implicit decoder: HBaseDecoder[T]): Iterable[Iterable[DecodedValue[T]]] =
-      res.asScala.map(_.as[T])
+      res.map(_.as[T])
   }
 
   implicit class FutureResultOps(f: Future[Result]) {
