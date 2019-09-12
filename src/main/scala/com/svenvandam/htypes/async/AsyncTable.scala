@@ -7,7 +7,7 @@ trait AsyncTable {
 
   implicit class TableOps(table: Table) {
 
-    def scanAsync(s: Scan)(implicit ec: ExecutionContext): Future[ResultScanner] = makeAsync(table.getScanner(s))
+    def getScannerAsync(s: Scan)(implicit ec: ExecutionContext): Future[ResultScanner] = makeAsync(table.getScanner(s))
 
     def getAsync(g: Get)(implicit ec: ExecutionContext): Future[Result] = makeAsync(table.get(g))
 

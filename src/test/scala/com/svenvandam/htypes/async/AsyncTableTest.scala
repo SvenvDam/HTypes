@@ -19,10 +19,11 @@ class AsyncTableTest extends BaseHbaseTest {
     table.put(put)
     val scan = new Scan().addColumn("cf1", "c1")
 
-    val scanResult = Await.result(table.scanAsync(scan), 3 seconds)
+    val scanResult = Await.result(table.getScannerAsync(scan), 3 seconds)
     val res = scanResult.asScala.head
 
     Bytes.toString(res.getRow) shouldBe "r1"
     Bytes.toString(res.getValue("cf1", "c1")) shouldBe "v1"
   }
+
 }
