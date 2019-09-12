@@ -26,8 +26,6 @@ trait Instances {
           def encode(b: B): Row = hBaseEncoderContravariant.contramap(fa)(g).encode(b)
         }
     }
-
-  hBaseCodecInvariant.composeFunctor
 }
 
 object Instances extends Instances
