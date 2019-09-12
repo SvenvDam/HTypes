@@ -1,10 +1,9 @@
-package com.svenvandam.htypes.converters
+package com.svenvandam.htypes.codec
 
 import cats.{Contravariant, Functor, Invariant}
 import com.svenvandam.htypes.model.Row
 
-// TODO: rename
-trait Instances {
+trait Transformers {
   implicit val hBaseDecoderFunctor: Functor[HBaseDecoder] =
     new Functor[HBaseDecoder] {
       def map[A, B](fa: HBaseDecoder[A])(f: A => B): HBaseDecoder[B] =
@@ -28,4 +27,4 @@ trait Instances {
     }
 }
 
-object Instances extends Instances
+object Transformers extends Transformers

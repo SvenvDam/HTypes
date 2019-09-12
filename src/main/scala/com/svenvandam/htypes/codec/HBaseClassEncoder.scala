@@ -1,4 +1,4 @@
-package com.svenvandam.htypes.converters
+package com.svenvandam.htypes.codec
 
 import com.svenvandam.htypes.model.Column
 

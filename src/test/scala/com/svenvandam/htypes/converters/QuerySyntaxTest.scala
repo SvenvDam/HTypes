@@ -1,6 +1,7 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.BaseHbaseTest
+import com.svenvandam.htypes.codec.{HBaseClassEncoder, HBaseEncoder}
 import com.svenvandam.htypes.model.{CellValue, Row, Column}
 import org.apache.hadoop.hbase.client.{Scan, Put, Get}
 import org.apache.hadoop.hbase.util.Bytes

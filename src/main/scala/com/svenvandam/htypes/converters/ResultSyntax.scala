@@ -1,5 +1,6 @@
 package com.svenvandam.htypes.converters
 
+import com.svenvandam.htypes.codec.HBaseDecoder
 import com.svenvandam.htypes.model.{CellValue, DecodedValue, Row, Column}
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.hadoop.hbase.{CellUtil, Cell}
