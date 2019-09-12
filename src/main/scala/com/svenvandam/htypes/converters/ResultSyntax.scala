@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.client.{Result, ResultScanner}
 import org.apache.hadoop.hbase.util.Bytes
 import scala.concurrent.{Future, ExecutionContext}
 
-trait ResultSyntax extends ScalaConverter with LazyLogging {
+trait ResultSyntax extends ScalaConverter {
 
   private implicit val cellOrdering = new Ordering[Cell] {
     override def compare(x: Cell, y: Cell) =
@@ -27,7 +27,6 @@ trait ResultSyntax extends ScalaConverter with LazyLogging {
             val qualifier = Bytes.toString(CellUtil.cloneQualifier(cell))
             val value = CellUtil.cloneValue(cell)
             val timestamp = cell.getTimestamp
-            logger.info(s"family: $family, col: $qualifier, value: $value, time: $timestamp")
             val head = lst.headOption.getOrElse(AccResult(0, Map.empty))
             val tail = if (head.timestamp == timestamp) lst.tail else lst
             AccResult(
