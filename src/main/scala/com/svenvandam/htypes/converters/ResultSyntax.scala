@@ -1,30 +1,39 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.model.{CellValue, DecodedValue, Row, Column}
-import org.apache.hadoop.hbase.CellUtil
+import com.typesafe.scalalogging.LazyLogging
+import org.apache.hadoop.hbase.{CellUtil, Cell}
 import org.apache.hadoop.hbase.client.{Result, ResultScanner}
 import org.apache.hadoop.hbase.util.Bytes
 import scala.concurrent.{Future, ExecutionContext}
 import scala.jdk.CollectionConverters._
 
-trait ResultSyntax {
+trait ResultSyntax extends LazyLogging {
+
+  private implicit val cellOrdering = new Ordering[Cell] {
+    override def compare(x: Cell, y: Cell) =
+      x.getTimestamp.compare(y.getTimestamp)
+  }
+
   implicit class ResultOps(res: Result) {
     def as[T](implicit decoder: HBaseDecoder[T]): Iterable[DecodedValue[T]] = {
       val row = Bytes.toString(res.getRow)
       res
-        .listCells()
-        .asScala
-        .toSeq
-        .foldRight(List.empty[AccResult]) {
-          case (cell, lst) =>
+        .rawCells
+        .sorted
+        .foldLeft(List.empty[AccResult]) {
+          case (lst, cell) =>
             val family = Bytes.toString(CellUtil.cloneFamily(cell))
             val qualifier = Bytes.toString(CellUtil.cloneQualifier(cell))
             val value = CellUtil.cloneValue(cell)
             val timestamp = cell.getTimestamp
+            logger.info(s"family: $family, col: $qualifier, value: $value, time: $timestamp")
+            val head = lst.headOption.getOrElse(AccResult(0, Map.empty))
+            val tail = if (head.timestamp == timestamp) lst.tail else lst
             AccResult(
               timestamp,
-              lst.headOption.getOrElse(AccResult(0, Map.empty)).values + (Column(family, qualifier) -> CellValue(value))
-            ) :: lst
+              head.values + (Column(family, qualifier) -> CellValue(value))
+            ) :: tail
         }
         .map(acc => (decoder.decode(Row(row, acc.values)), acc.timestamp))
         .flatMap {

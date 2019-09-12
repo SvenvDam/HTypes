@@ -66,10 +66,22 @@ class ResultSyntaxTest extends BaseHbaseTest {
         .addColumn("profile", "age", 3, "25")
     )
 
-    table.get(new Get("abc").readVersions(2)).as[User] shouldBe List(
+    table.get(new Get("abc").readAllVersions).as[User] shouldBe List(
       DecodedValue(User("abc", "Sven", 25), 3),
       DecodedValue(User("abc", "Sven", 24), 2),
     )
+  }
+
+  test("it should produce one instance per timestamp") {
+    val table = getTable(families = Array("profile"))
+    table.put(
+      new Put("abc")
+        .addColumn("profile", "name", 2, "Sven")
+        .addColumn("profile", "age", 2, "25")
+        .addColumn("profile", "age", 1, "24")
+    )
+
+    table.get(new Get("abc").readAllVersions).as[User] shouldBe List(DecodedValue(User("abc", "Sven", 25), 2))
   }
 
   test("it should construct multiple users using Scan") {
