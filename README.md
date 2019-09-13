@@ -89,5 +89,7 @@ implicit val userDecoder = new HBaseDecoder[User] {
 val table = conn.getTable(...)
 val get = new Get("Jack".getBytes).addColumn("profile".getBytes, "age".getBytes)
 
-val user: Iterable[User] = table.get(get).as[User]
+val user: Iterable[DecodedValue[User]] = table.get(get).as[User]
 ```
+
+Note that we get an `Iterable[DecodedValue]`. 
