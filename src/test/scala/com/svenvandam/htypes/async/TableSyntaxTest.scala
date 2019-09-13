@@ -9,7 +9,7 @@ import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 
 class TableSyntaxTest extends BaseHbaseTest {
-  import TableSyntax$._
+  import TableSyntax._
 
   test("it should wraps scan results in future") {
     import scala.concurrent.ExecutionContext.Implicits.global

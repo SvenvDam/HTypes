@@ -1,7 +1,7 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.codec.HBaseDecoder
-import com.svenvandam.htypes.model.{CellValue, DecodedValue, Row, Column}
+import com.svenvandam.htypes.model.{CellValue, Row, Column}
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.hadoop.hbase.{CellUtil, Cell}
 import org.apache.hadoop.hbase.client.{Result, ResultScanner}
@@ -16,7 +16,7 @@ trait ResultSyntax extends ScalaConverter {
   }
 
   implicit class ResultOps(res: Result) {
-    def as[T](implicit decoder: HBaseDecoder[T]): Iterable[DecodedValue[T]] = {
+    def as[T](implicit decoder: HBaseDecoder[T]): Iterable[(T, Long)] = {
       val row = Bytes.toString(res.getRow)
       res
         .rawCells
@@ -36,7 +36,7 @@ trait ResultSyntax extends ScalaConverter {
         }
         .map(acc => (decoder.decode(Row(row, acc.values)), acc.timestamp))
         .flatMap {
-          case (Some(value), timestamp) => List(DecodedValue(value, timestamp))
+          case (Some(value), timestamp) => List((value, timestamp))
           case _ => List.empty
         }
     }
@@ -45,17 +45,17 @@ trait ResultSyntax extends ScalaConverter {
   }
 
   implicit class ResultScannerOps(res: ResultScanner) {
-    def as[T](implicit decoder: HBaseDecoder[T]): Iterable[Iterable[DecodedValue[T]]] =
+    def as[T](implicit decoder: HBaseDecoder[T]): Iterable[Iterable[(T, Long)]] =
       res.map(_.as[T])
   }
 
   implicit class FutureResultOps(f: Future[Result]) {
-    def as[T](implicit decoder: HBaseDecoder[T], ec: ExecutionContext): Future[Iterable[DecodedValue[T]]] = f
+    def as[T](implicit decoder: HBaseDecoder[T], ec: ExecutionContext): Future[Iterable[(T, Long)]] = f
       .map(_.as[T])
   }
 
   implicit class FutureResultScannerOps(f: Future[ResultScanner]) {
-    def as[T](implicit decoder: HBaseDecoder[T], ec: ExecutionContext): Future[Iterable[Iterable[DecodedValue[T]]]] = f
+    def as[T](implicit decoder: HBaseDecoder[T], ec: ExecutionContext): Future[Iterable[Iterable[(T, Long)]]] = f
       .map(_.as[T])
   }
 }

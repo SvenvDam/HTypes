@@ -2,7 +2,7 @@ package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.codec.HBaseDecoder
-import com.svenvandam.htypes.model.{DecodedValue, Row, Column}
+import com.svenvandam.htypes.model.{Row, Column}
 import org.apache.hadoop.hbase.client.{Scan, Put, Get}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
@@ -33,7 +33,7 @@ class ResultSyntaxTest extends BaseHbaseTest {
         .addColumn("profile", "age", 1, "24")
     )
 
-    table.get(new Get("abc")).as[User] shouldBe List(DecodedValue(User("abc", "Sven", 24), 1))
+    table.get(new Get("abc")).as[User] shouldBe List((User("abc", "Sven", 24), 1))
   }
 
   test("it should construct a user from a Future[Result]") {
@@ -45,7 +45,7 @@ class ResultSyntaxTest extends BaseHbaseTest {
     )
 
     val result = Await.result(Future(table.get(new Get("abc"))).as[User], 1 seconds)
-    result shouldBe List(DecodedValue(User("abc", "Sven", 24), 1))
+    result shouldBe List((User("abc", "Sven", 24), 1))
   }
 
   test("it should handle missing data in Result") {
@@ -68,8 +68,8 @@ class ResultSyntaxTest extends BaseHbaseTest {
     )
 
     table.get(new Get("abc").readAllVersions).as[User] shouldBe List(
-      DecodedValue(User("abc", "Sven", 25), 3),
-      DecodedValue(User("abc", "Sven", 24), 2),
+      (User("abc", "Sven", 25), 3),
+      (User("abc", "Sven", 24), 2),
     )
   }
 
@@ -82,7 +82,7 @@ class ResultSyntaxTest extends BaseHbaseTest {
         .addColumn("profile", "age", 1, "24")
     )
 
-    table.get(new Get("abc").readAllVersions).as[User] shouldBe List(DecodedValue(User("abc", "Sven", 25), 2))
+    table.get(new Get("abc").readAllVersions).as[User] shouldBe List((User("abc", "Sven", 25), 2))
   }
 
   test("it should construct multiple users using Scan") {
@@ -99,8 +99,8 @@ class ResultSyntaxTest extends BaseHbaseTest {
     )
 
     table.getScanner(new Scan()).as[User] shouldBe List(
-      List(DecodedValue(User("abc", "Sven", 24), 1)),
-      List(DecodedValue(User("xyz", "Jack", 23), 1))
+      List((User("abc", "Sven", 24), 1)),
+      List((User("xyz", "Jack", 23), 1))
     )
 
   }
