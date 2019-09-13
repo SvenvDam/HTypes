@@ -3,7 +3,7 @@ package com.svenvandam.htypes.async
 import org.apache.hadoop.hbase.client._
 import scala.concurrent.{Future, ExecutionContext, blocking}
 
-trait AsyncTable {
+trait TableSyntax {
 
   implicit class TableOps(table: Table) {
 
@@ -24,4 +24,4 @@ trait AsyncTable {
     }
 }
 
-object AsyncTable extends AsyncTable
+object TableSyntax extends TableSyntax

@@ -1,11 +1,11 @@
 package com.svenvandam.htypes
 
-import com.svenvandam.htypes.async.AsyncTable
+import com.svenvandam.htypes.async.TableSyntax$
 import com.svenvandam.htypes.codec.Transformers
 import com.svenvandam.htypes.converters.{ScalaConverter, ResultSyntax, QuerySyntax}
 
 object Implicits
-  extends AsyncTable
+  extends TableSyntax$
   with ScalaConverter
   with QuerySyntax
   with ResultSyntax

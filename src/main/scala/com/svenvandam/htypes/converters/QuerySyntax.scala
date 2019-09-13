@@ -6,8 +6,8 @@ import org.apache.hadoop.hbase.client.{Scan, Put, Delete, Get}
 
 trait QuerySyntax {
   implicit class GetOps(get: Get) {
-    def from[T](implicit columnGetter: HBaseClassEncoder[T]): Get =
-      columnGetter
+    def from[T](implicit classEncoder: HBaseClassEncoder[T]): Get =
+      classEncoder
         .getColumns
         .foldLeft(get) {
           case (g, col) => g.addColumn(col.getFamilyB, col.getQualifierB)
@@ -15,8 +15,8 @@ trait QuerySyntax {
   }
 
   implicit class ScanOps(scan: Scan) {
-    def from[T](implicit columnGetter: HBaseClassEncoder[T]): Scan =
-      columnGetter
+    def from[T](implicit classEncoder: HBaseClassEncoder[T]): Scan =
+      classEncoder
         .getColumns
         .foldLeft(scan) {
           case (s, col) => s.addColumn(col.getFamilyB, col.getQualifierB)
