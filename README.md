@@ -77,6 +77,7 @@ An example:
 
 ```scala
 case class User(name: String, age: Int)
+
 implicit val userDecoder = new HBaseDecoder[User] {
   def decoder(row: Row): Option[User] = for {
     ageB <- row.values.get(Column("profile", "age"))
@@ -93,3 +94,8 @@ val user: Iterable[(User, Long)] = table.get(get).as[User]
 ```
 
 Note that we get an `Iterable[(User, Long)]`. We get an `User` at each timestamp where we had enough data to construct one!
+
+#### Transforming typeclasses
+
+For if you are in to that sort of thing, `Transformers` defines functor instances from the `cats` library.
+Concretely, `HBaseDecoder` has a `Functor`, `HBaseEncoder` has a `Contravariant` and `HBaseCodec` has an `Invariant`.
