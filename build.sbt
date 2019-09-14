@@ -2,7 +2,7 @@ name := "HTypes"
 
 version := "0.1"
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.13.0"
 crossScalaVersions := Seq("2.13.0", "2.12.9", "2.11.12")
 
 val hBaseVersion = "2.2.0"

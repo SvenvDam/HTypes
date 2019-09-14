@@ -6,14 +6,16 @@ import com.svenvandam.htypes.model.Row
 trait Transformers {
   implicit val hBaseDecoderFunctor: Functor[HBaseDecoder] =
     new Functor[HBaseDecoder] {
-      def map[A, B](fa: HBaseDecoder[A])(f: A => B): HBaseDecoder[B] =
-        (row: Row) => fa.decode(row).map(f)
+      def map[A, B](fa: HBaseDecoder[A])(f: A => B): HBaseDecoder[B] = new HBaseDecoder[B] {
+        def decode(row: Row): Option[B] = fa.decode(row).map(f)
+      }
     }
 
   implicit val hBaseEncoderContravariant: Contravariant[HBaseEncoder] =
     new Contravariant[HBaseEncoder] {
-      def contramap[A, B](fa: HBaseEncoder[A])(f: B => A): HBaseEncoder[B] =
-        (b: B) => fa.encode(f(b))
+      def contramap[A, B](fa: HBaseEncoder[A])(f: B => A): HBaseEncoder[B] = new HBaseEncoder[B] {
+        override def encode(b: B) = fa.encode(f(b))
+      }
     }
 
   implicit val hBaseCodecInvariant: Invariant[HBaseCodec] =
