@@ -6,7 +6,7 @@ import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.jdk.CollectionConverters._
+//import scala.jdk.CollectionConverters._
 
 class TableSyntaxTest extends BaseHbaseTest {
   import TableSyntax._
