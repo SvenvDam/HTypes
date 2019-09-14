@@ -69,7 +69,7 @@ class ResultSyntaxTest extends BaseHbaseTest {
 
     table.get(new Get("abc").readAllVersions).as[User] shouldBe List(
       (User("abc", "Sven", 25), 3),
-      (User("abc", "Sven", 24), 2),
+      (User("abc", "Sven", 24), 2)
     )
   }
 
