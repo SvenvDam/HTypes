@@ -6,61 +6,19 @@ import org.apache.hadoop.hbase.client.{Scan, Put, Delete, Get}
 
 trait QuerySyntax {
   implicit class GetOps(get: Get) {
-    def from[T](implicit classEncoder: HBaseClassEncoder[T]): Get =
-      classEncoder
-        .getColumns
-        .foldLeft(get) {
-          case (g, col) => g.addColumn(col.getFamilyB, col.getQualifierB)
-        }
+    def from[T](implicit classEncoder: HBaseClassEncoder[T]): Get = GetUtils.from[T](get)
   }
 
   implicit class ScanOps(scan: Scan) {
-    def from[T](implicit classEncoder: HBaseClassEncoder[T]): Scan =
-      classEncoder
-        .getColumns
-        .foldLeft(scan) {
-          case (s, col) => s.addColumn(col.getFamilyB, col.getQualifierB)
-        }
+    def from[T](implicit classEncoder: HBaseClassEncoder[T]): Scan = ScanUtils.from[T](scan)
   }
 
   implicit class PutOps(put: Put) {
-    def from[T](t: T)(implicit encoder: HBaseEncoder[T]): Put =
-      encoder
-        .encode(t)
-        .values
-        .foldLeft(put) {
-          case (p, (col, CellValue(value, Some(timestamp)))) =>
-            p.addColumn(col.getFamilyB, col.getQualifierB, timestamp, value)
-          case (p, (col, CellValue(value, None))) =>
-            p.addColumn(col.getFamilyB, col.getQualifierB, value)
-        }
-  }
-
-  object PutUtil {
-    def createFrom[T](t: T)(implicit encoder: HBaseEncoder[T]): Put = {
-      val row = encoder.encode(t)
-      new Put(row.getKeyB).from(t)
-    }
+    def from[T](t: T)(implicit encoder: HBaseEncoder[T]): Put = PutUtils.from(put)(t)
   }
 
   implicit class DeleteOps(delete: Delete) {
-    def from[T](t: T)(implicit encoder: HBaseEncoder[T]): Delete =
-      encoder
-        .encode(t)
-        .values
-        .foldLeft(delete) {
-          case (d, (col, CellValue(_, Some(timestamp)))) =>
-            d.addColumn(col.getFamilyB, col.getQualifierB, timestamp)
-          case (d, (col, CellValue(_, None))) =>
-            d.addColumn(col.getFamilyB, col.getQualifierB)
-        }
-  }
-
-  object DeleteUtil {
-    def createFrom[T](t: T)(implicit encoder: HBaseEncoder[T]): Delete = {
-      val row = encoder.encode(t)
-      new Delete(row.getKeyB).from(t)
-    }
+    def from[T](t: T)(implicit encoder: HBaseEncoder[T]): Delete = DeleteUtils.from(delete)(t)
   }
 }
 

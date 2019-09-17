@@ -10,38 +10,8 @@ import scala.concurrent.{Future, ExecutionContext}
 
 trait ResultSyntax extends ScalaConverter {
 
-  private implicit val cellOrdering = new Ordering[Cell] {
-    override def compare(x: Cell, y: Cell) =
-      x.getTimestamp.compare(y.getTimestamp)
-  }
-
   implicit class ResultOps(res: Result) {
-    def as[T](implicit decoder: HBaseDecoder[T]): Iterable[(T, Long)] = {
-      val row = Bytes.toString(res.getRow)
-      res
-        .rawCells
-        .sorted
-        .foldLeft(List.empty[AccResult]) {
-          case (lst, cell) =>
-            val family = Bytes.toString(CellUtil.cloneFamily(cell))
-            val qualifier = Bytes.toString(CellUtil.cloneQualifier(cell))
-            val value = CellUtil.cloneValue(cell)
-            val timestamp = cell.getTimestamp
-            val head = lst.headOption.getOrElse(AccResult(0, Map.empty))
-            val tail = if (head.timestamp == timestamp) lst.tail else lst
-            AccResult(
-              timestamp,
-              head.values + (Column(family, qualifier) -> CellValue(value))
-            ) :: tail
-        }
-        .map(acc => (decoder.decode(Row(row, acc.values)), acc.timestamp))
-        .flatMap {
-          case (Some(value), timestamp) => List((value, timestamp))
-          case _ => List.empty
-        }
-    }
-
-    private[this] case class AccResult(timestamp: Long, values: Map[Column, CellValue])
+    def as[T](implicit decoder: HBaseDecoder[T]): Iterable[(T, Long)] = ResultUtils.as(res)
   }
 
   implicit class ResultScannerOps(res: ResultScanner) {

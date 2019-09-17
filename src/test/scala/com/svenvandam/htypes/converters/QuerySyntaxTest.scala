@@ -31,7 +31,7 @@ class QuerySyntaxTest extends BaseHbaseTest {
 
   test("it should encode a User to a Put") {
     val table = getTable(families = Array("profile"))
-    val put = PutUtil.createFrom(User("abc", "Sven", 24))
+    val put = PutUtils.createFrom(User("abc", "Sven", 24))
     table.put(put)
 
     val result = table.get(new Get("abc"))
