@@ -50,7 +50,7 @@ class QuerySyntaxTest extends BaseHbaseTest {
         .addColumn("profile", "col", "xx")
     )
 
-    val delete = DeleteUtil.createFrom(User("abc", "Sven", 24))
+    val delete = DeleteUtils.createFrom(User("abc", "Sven", 24))
 
     table.delete(delete)
 
