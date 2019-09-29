@@ -1,14 +1,14 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.codec.HBaseDecoder
-import com.svenvandam.htypes.model.{CellValue, Row, Column}
-import org.apache.hadoop.hbase.{CellUtil, Cell}
+import com.svenvandam.htypes.model.{CellValue, Column, Row}
+import org.apache.hadoop.hbase.{Cell, CellUtil}
 import org.apache.hadoop.hbase.client.Result
 import org.apache.hadoop.hbase.util.Bytes
 
 object ResultUtils {
 
-  private implicit val cellOrdering = new Ordering[Cell] {
+  implicit private val cellOrdering = new Ordering[Cell] {
     override def compare(x: Cell, y: Cell) =
       x.getTimestamp.compare(y.getTimestamp)
   }
@@ -34,7 +34,7 @@ object ResultUtils {
       .map(acc => (decoder.decode(Row(row, acc.values)), acc.timestamp))
       .flatMap {
         case (Some(value), timestamp) => List((value, timestamp))
-        case _ => List.empty
+        case _                        => List.empty
       }
   }
 

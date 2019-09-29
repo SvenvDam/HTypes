@@ -1,6 +1,6 @@
 package com.svenvandam.htypes.codec
 
-import com.svenvandam.htypes.model.{CellValue, Row, Column}
+import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import org.scalatest.FunSuite
 import cats.implicits._
 import org.apache.hadoop.hbase.util.Bytes
@@ -54,7 +54,7 @@ object TransformersTest {
   implicit val userNoIdDecoder = new HBaseDecoder[UserNoId] {
     def decode(row: Row): Option[UserNoId] = for {
       name <- row.values.get(Column("profile", "name"))
-      age <- row.values.get(Column("profile", "age"))
+      age  <- row.values.get(Column("profile", "age"))
     } yield UserNoId(
       Bytes.toString(name.value),
       Bytes.toString(age.value).toInt

@@ -1,7 +1,7 @@
 package com.svenvandam.htypes.async
 
 import org.apache.hadoop.hbase.client._
-import scala.concurrent.{Future, ExecutionContext, blocking}
+import scala.concurrent.{blocking, ExecutionContext, Future}
 
 trait TableSyntax {
 

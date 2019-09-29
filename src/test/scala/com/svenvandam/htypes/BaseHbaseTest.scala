@@ -4,7 +4,7 @@ import java.util.UUID
 import com.svenvandam.htypes.converters.ScalaConverter
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.hadoop.hbase.client.Table
-import org.apache.hadoop.hbase.{TableName, HBaseTestingUtility}
+import org.apache.hadoop.hbase.{HBaseTestingUtility, TableName}
 import org.scalatest.{BeforeAndAfterAll, FunSuiteLike}
 
 trait BaseHbaseTest extends FunSuiteLike with BeforeAndAfterAll with LazyLogging with ScalaConverter {

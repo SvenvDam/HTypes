@@ -2,11 +2,11 @@ package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.codec.HBaseDecoder
-import com.svenvandam.htypes.model.{Row, Column}
-import org.apache.hadoop.hbase.client.{Scan, Put, Get}
+import com.svenvandam.htypes.model.{Column, Row}
+import org.apache.hadoop.hbase.client.{Get, Put, Scan}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
-import scala.concurrent.{Future, Await}
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
@@ -17,7 +17,7 @@ class ResultSyntaxTest extends BaseHbaseTest {
   implicit val userDecoder = new HBaseDecoder[User] {
     def decode(row: Row): Option[User] = for {
       name <- row.values.get(Column("profile", "name"))
-      age <- row.values.get(Column("profile", "age"))
+      age  <- row.values.get(Column("profile", "age"))
     } yield User(
       row.key,
       Bytes.toString(name.value),

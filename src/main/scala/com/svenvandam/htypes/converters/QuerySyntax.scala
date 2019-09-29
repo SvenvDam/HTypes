@@ -2,7 +2,7 @@ package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.codec.{HBaseClassEncoder, HBaseEncoder}
 import com.svenvandam.htypes.model.CellValue
-import org.apache.hadoop.hbase.client.{Scan, Put, Delete, Get}
+import org.apache.hadoop.hbase.client.{Delete, Get, Put, Scan}
 
 trait QuerySyntax {
   implicit class GetOps(get: Get) {

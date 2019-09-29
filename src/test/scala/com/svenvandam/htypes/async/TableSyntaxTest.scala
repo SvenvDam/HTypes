@@ -1,7 +1,7 @@
 package com.svenvandam.htypes.async
 
 import com.svenvandam.htypes.BaseHbaseTest
-import org.apache.hadoop.hbase.client.{Scan, Put}
+import org.apache.hadoop.hbase.client.{Put, Scan}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
 import scala.concurrent.Await

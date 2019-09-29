@@ -1,12 +1,12 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.codec.HBaseDecoder
-import com.svenvandam.htypes.model.{CellValue, Row, Column}
+import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import com.typesafe.scalalogging.LazyLogging
-import org.apache.hadoop.hbase.{CellUtil, Cell}
+import org.apache.hadoop.hbase.{Cell, CellUtil}
 import org.apache.hadoop.hbase.client.{Result, ResultScanner}
 import org.apache.hadoop.hbase.util.Bytes
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 trait ResultSyntax extends ScalaConverter {
 
