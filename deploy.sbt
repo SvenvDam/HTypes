@@ -6,9 +6,4 @@ licenses += ("MIT", url("https://opensource.org/licenses/MIT"))
 publishMavenStyle := true
 publishArtifact in Test := false
 
-publishTo in ThisBuild := Some(
-  if (isSnapshot.value)
-    Opts.resolver.sonatypeSnapshots
-  else
-    Opts.resolver.sonatypeStaging
-)
+publishTo := sonatypePublishToBundle.value
