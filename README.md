@@ -11,7 +11,9 @@ It adds two improvements to the existing API:
 
 ## Installation
 
-TODO
+```sbtshell
+libraryDependencies += "com.svenvandam" %% "htypes" % "0.1"
+```
 
 ## Usage
 To get started easily, simply import all members of `Implicits`.
