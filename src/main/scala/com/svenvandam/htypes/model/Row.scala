@@ -1,5 +1,13 @@
 package com.svenvandam.htypes.model
 
-case class Row(key: String, values: Map[Column, CellValue]) {
-  def getKeyB: Array[Byte] = key.getBytes
+import com.svenvandam.htypes.codec.Encoder
+
+case class Row(key: Array[Byte], values: Map[Column, CellValue])
+
+object Row {
+  def apply[A](key: A, values: Map[Column, CellValue])(implicit encoder: Encoder[Array[Byte], A]) =
+    new Row(
+      encoder.encode(key),
+      values
+    )
 }

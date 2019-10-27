@@ -4,7 +4,6 @@ import com.svenvandam.htypes.hbase.RowDecoder
 import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import org.apache.hadoop.hbase.{Cell, CellUtil}
 import org.apache.hadoop.hbase.client.Result
-import org.apache.hadoop.hbase.util.Bytes
 
 object ResultUtils {
 
@@ -13,30 +12,41 @@ object ResultUtils {
       x.getTimestamp.compare(y.getTimestamp)
   }
 
-  def as[T](res: Result)(implicit decoder: RowDecoder[T]): Iterable[(T, Long)] = {
-    val row = Bytes.toString(res.getRow)
-    res
+  def as[T](result: Result)(implicit decoder: RowDecoder[T]): Iterable[(T, Long)] = {
+    val row = result.getRow
+    result
       .rawCells
-      .sorted
-      .foldLeft(List.empty[AccResult]) {
-        case (lst, cell) =>
-          val family = Bytes.toString(CellUtil.cloneFamily(cell))
-          val qualifier = Bytes.toString(CellUtil.cloneQualifier(cell))
-          val value = CellUtil.cloneValue(cell)
-          val timestamp = cell.getTimestamp
-          val head = lst.headOption.getOrElse(AccResult(0, Map.empty))
-          val tail = if (head.timestamp == timestamp) lst.tail else lst
-          AccResult(
-            timestamp,
-            head.values + (Column(family, qualifier) -> CellValue(value))
-          ) :: tail
+      .groupBy(_.getTimestamp)
+      .toSeq
+      .sortBy(_._1)
+      .scanLeft[(Map[Column, CellValue], Long)]((Map.empty, 0)) {
+        case ((columns, _), (timestamp, newCells)) =>
+          val newColumns = newCells.map(getColumnAndValueFromCell)
+
+          (columns ++ newColumns, timestamp)
       }
-      .map(acc => (decoder.decode(Row(row, acc.values)), acc.timestamp))
+      .map {
+        case (columns, timestamp) =>
+          (decoder.decode(Row(row, columns)), timestamp)
+      }
       .flatMap {
         case (Some(value), timestamp) => List((value, timestamp))
         case _                        => List.empty
       }
   }
 
-  private[this] case class AccResult(timestamp: Long, values: Map[Column, CellValue])
+  private def getColumnAndValueFromCell(cell: Cell) = {
+    val column = Column(
+      CellUtil.cloneFamily(cell),
+      CellUtil.cloneQualifier(cell)
+    )
+
+    val cellValue = CellValue(
+      CellUtil.cloneValue(cell),
+      Some(cell.getTimestamp)
+    )
+
+    column -> cellValue
+  }
+
 }

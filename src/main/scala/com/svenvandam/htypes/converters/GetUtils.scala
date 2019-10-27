@@ -8,6 +8,6 @@ object GetUtils {
     classEncoder
       .getColumns
       .foldLeft(get) {
-        case (g, col) => g.addColumn(col.getFamilyB, col.getQualifierB)
+        case (g, col) => g.addColumn(col.family, col.qualifier)
       }
 }

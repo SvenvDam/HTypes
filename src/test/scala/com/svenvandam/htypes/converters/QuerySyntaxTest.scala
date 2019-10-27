@@ -6,6 +6,7 @@ import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import org.apache.hadoop.hbase.client.{Get, Put, Scan}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
+import com.svenvandam.htypes.bytes.Instances._
 
 class QuerySyntaxTest extends BaseHbaseTest {
   import QuerySyntax._

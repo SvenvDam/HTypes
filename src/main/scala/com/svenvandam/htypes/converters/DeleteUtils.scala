@@ -11,13 +11,13 @@ object DeleteUtils {
       .values
       .foldLeft(delete) {
         case (d, (col, CellValue(_, Some(timestamp)))) =>
-          d.addColumn(col.getFamilyB, col.getQualifierB, timestamp)
+          d.addColumn(col.family, col.qualifier, timestamp)
         case (d, (col, CellValue(_, None))) =>
-          d.addColumn(col.getFamilyB, col.getQualifierB)
+          d.addColumn(col.family, col.qualifier)
       }
 
   def createFrom[T](t: T)(implicit encoder: RowEncoder[T]): Delete = {
     val row = encoder.encode(t)
-    from(new Delete(row.getKeyB))(t)
+    from(new Delete(row.key))(t)
   }
 }

@@ -1,7 +1,18 @@
 package com.svenvandam.htypes.model
 
-case class Column(family: String, qualifier: String) {
-  def getFamilyB: Array[Byte] = family.getBytes
+import com.svenvandam.htypes.codec.Encoder
 
-  def getQualifierB: Array[Byte] = qualifier.getBytes
+case class Column(family: Array[Byte], qualifier: Array[Byte])
+
+object Column {
+  def apply[A, B](
+      family: A,
+      qualifier: B
+    )(implicit familyEncoder: Encoder[Array[Byte], A],
+      qualifierEnCoder: Encoder[Array[Byte], B]
+    ) =
+    new Column(
+      familyEncoder.encode(family),
+      qualifierEnCoder.encode(qualifier)
+    )
 }

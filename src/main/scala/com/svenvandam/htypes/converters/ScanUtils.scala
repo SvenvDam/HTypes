@@ -8,6 +8,6 @@ object ScanUtils {
     classEncoder
       .getColumns
       .foldLeft(scan) {
-        case (s, col) => s.addColumn(col.getFamilyB, col.getQualifierB)
+        case (s, col) => s.addColumn(col.family, col.qualifier)
       }
 }
