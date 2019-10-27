@@ -1,7 +1,7 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.BaseHbaseTest
-import com.svenvandam.htypes.codec.HBaseDecoder
+import com.svenvandam.htypes.hbase.RowDecoder
 import com.svenvandam.htypes.model.{Column, Row}
 import org.apache.hadoop.hbase.client.{Get, Put, Scan}
 import org.apache.hadoop.hbase.util.Bytes
@@ -14,7 +14,7 @@ class ResultSyntaxTest extends BaseHbaseTest {
   import ResultSyntax._
   import ResultSyntaxTest._
 
-  implicit val userDecoder = new HBaseDecoder[User] {
+  implicit val userDecoder = new RowDecoder[User] {
     def decode(row: Row): Option[User] = for {
       name <- row.values.get(Column("profile", "name"))
       age  <- row.values.get(Column("profile", "age"))

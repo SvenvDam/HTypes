@@ -1,11 +1,11 @@
 package com.svenvandam.htypes.converters
 
-import com.svenvandam.htypes.codec.HBaseEncoder
+import com.svenvandam.htypes.hbase.RowEncoder
 import com.svenvandam.htypes.model.CellValue
 import org.apache.hadoop.hbase.client.Delete
 
 object DeleteUtils {
-  def from[T](delete: Delete)(t: T)(implicit encoder: HBaseEncoder[T]): Delete =
+  def from[T](delete: Delete)(t: T)(implicit encoder: RowEncoder[T]): Delete =
     encoder
       .encode(t)
       .values
@@ -16,7 +16,7 @@ object DeleteUtils {
           d.addColumn(col.getFamilyB, col.getQualifierB)
       }
 
-  def createFrom[T](t: T)(implicit encoder: HBaseEncoder[T]): Delete = {
+  def createFrom[T](t: T)(implicit encoder: RowEncoder[T]): Delete = {
     val row = encoder.encode(t)
     from(new Delete(row.getKeyB))(t)
   }

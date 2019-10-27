@@ -1,7 +1,7 @@
-package com.svenvandam.htypes.codec
+package com.svenvandam.htypes.hbase
 
 import com.svenvandam.htypes.model.Column
 
-trait HBaseClassEncoder[T] {
+trait ColumnEncoder[A] {
   def getColumns: Set[Column]
 }

@@ -1,6 +1,6 @@
 package com.svenvandam.htypes.converters
 
-import com.svenvandam.htypes.codec.HBaseDecoder
+import com.svenvandam.htypes.hbase.RowDecoder
 import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import org.apache.hadoop.hbase.{Cell, CellUtil}
 import org.apache.hadoop.hbase.client.Result
@@ -13,7 +13,7 @@ object ResultUtils {
       x.getTimestamp.compare(y.getTimestamp)
   }
 
-  def as[T](res: Result)(implicit decoder: HBaseDecoder[T]): Iterable[(T, Long)] = {
+  def as[T](res: Result)(implicit decoder: RowDecoder[T]): Iterable[(T, Long)] = {
     val row = Bytes.toString(res.getRow)
     res
       .rawCells

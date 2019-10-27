@@ -1,7 +1,7 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.BaseHbaseTest
-import com.svenvandam.htypes.codec.{HBaseClassEncoder, HBaseEncoder}
+import com.svenvandam.htypes.hbase.{ColumnEncoder, RowEncoder}
 import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import org.apache.hadoop.hbase.client.{Get, Put, Scan}
 import org.apache.hadoop.hbase.util.Bytes
@@ -11,7 +11,7 @@ class QuerySyntaxTest extends BaseHbaseTest {
   import QuerySyntax._
   import QuerySyntaxTest._
 
-  implicit val userEncoder = new HBaseEncoder[User] {
+  implicit val userEncoder = new RowEncoder[User] {
     override def encode(user: User): Row =
       Row(
         user.id,
@@ -22,7 +22,7 @@ class QuerySyntaxTest extends BaseHbaseTest {
       )
   }
 
-  implicit val userClassEncoder = new HBaseClassEncoder[User] {
+  implicit val userClassEncoder = new ColumnEncoder[User] {
     def getColumns = Set(
       Column("profile", "name"),
       Column("profile", "age")
