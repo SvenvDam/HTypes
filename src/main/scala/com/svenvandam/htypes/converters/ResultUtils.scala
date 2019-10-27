@@ -19,7 +19,7 @@ object ResultUtils {
       .groupBy(_.getTimestamp)
       .toSeq
       .sortBy(_._1)
-      .scanRight[(Map[Column, CellValue], Long)]((Map.empty, 0)) {
+      .scanRight((Map.empty[Column, CellValue], 0: Long)) {
         case ((timestamp, newCells), (columns, _)) =>
           val newColumns = newCells.map(getColumnAndValueFromCell)
 
