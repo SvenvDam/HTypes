@@ -18,7 +18,7 @@ class QuerySyntaxTest extends BaseHbaseTest {
         user.id,
         Map(
           Column("profile", "name") -> CellValue(user.name, None),
-          Column("profile", "age") -> CellValue(user.age.toString, None)
+          Column("profile", "age") -> CellValue(user.age, None)
         )
       )
   }
@@ -32,64 +32,64 @@ class QuerySyntaxTest extends BaseHbaseTest {
 
   test("it should encode a User to a Put") {
     val table = getTable(families = Array("profile"))
-    val put = PutUtils.createFrom(User("abc", "Sven", 24))
+    val put = PutUtils.createFrom(User("abc", "Alice", 24))
     table.put(put)
 
-    val result = table.get(new Get("abc"))
+    val result = table.get(new Get("abc".getBytes))
 
     Bytes.toString(result.getRow) shouldBe "abc"
-    Bytes.toString(result.getValue("profile", "name")) shouldBe "Sven"
-    Bytes.toString(result.getValue("profile", "age")) shouldBe "24"
+    Bytes.toString(result.getValue("profile".getBytes, "name".getBytes)) shouldBe "Alice"
+    Bytes.toInt(result.getValue("profile".getBytes, "age".getBytes)) shouldBe 24
   }
 
   test("it should encode a User to a Delete") {
     val table = getTable(families = Array("profile"))
     table.put(
-      new Put("abc")
-        .addColumn("profile", "name", "Sven")
-        .addColumn("profile", "age", "24")
-        .addColumn("profile", "col", "xx")
+      new Put("abc".getBytes)
+        .addColumn("profile".getBytes, "name".getBytes, "Alice".getBytes)
+        .addColumn("profile".getBytes, "age".getBytes, Bytes.toBytes(24))
+        .addColumn("profile".getBytes, "col".getBytes, "xx".getBytes)
     )
 
-    val delete = DeleteUtils.createFrom(User("abc", "Sven", 24))
+    val delete = DeleteUtils.createFrom(User("abc", "Alice", 24))
 
     table.delete(delete)
 
-    val result = table.get(new Get("abc"))
+    val result = table.get(new Get("abc".getBytes))
 
     Bytes.toString(result.getRow) shouldBe "abc"
-    Bytes.toString(result.getValue("profile", "name")) shouldBe null
-    Bytes.toString(result.getValue("profile", "age")) shouldBe null
-    Bytes.toString(result.getValue("profile", "col")) shouldBe "xx"
+    result.getValue("profile".getBytes, "name".getBytes) shouldBe null
+    result.getValue("profile".getBytes, "age".getBytes) shouldBe null
+    Bytes.toString(result.getValue("profile".getBytes, "col".getBytes)) shouldBe "xx"
   }
 
   test("it should add user fields to a Scan") {
     val table = getTable(families = Array("profile"))
     table.put(
-      new Put("abc")
-        .addColumn("profile", "name", "Sven")
-        .addColumn("profile", "age", "24")
+      new Put("abc".getBytes)
+        .addColumn("profile".getBytes, "name".getBytes, "Alice".getBytes)
+        .addColumn("profile".getBytes, "age".getBytes, Bytes.toBytes(24))
     )
 
     val scan = new Scan().from[User]
 
     val result = table.getScanner(scan).asScala.head
-    result.getValue("profile", "name") shouldBe "Sven".getBytes
+    result.getValue("profile".getBytes, "name".getBytes) shouldBe "Alice".getBytes
     result.getRow shouldBe "abc".getBytes
   }
 
   test("it should add user fields to a Get") {
     val table = getTable(families = Array("profile"))
     table.put(
-      new Put("abc")
-        .addColumn("profile", "name", "Sven")
-        .addColumn("profile", "age", "24")
+      new Put("abc".getBytes)
+        .addColumn("profile".getBytes, "name".getBytes, "Alice".getBytes)
+        .addColumn("profile".getBytes, "age".getBytes, Bytes.toBytes(24))
     )
 
-    val get = new Get("abc").from[User]
+    val get = new Get("abc".getBytes).from[User]
 
     val result = table.get(get)
-    result.getValue("profile", "name") shouldBe "Sven".getBytes
+    result.getValue("profile".getBytes, "name".getBytes) shouldBe "Alice".getBytes
   }
 }
 

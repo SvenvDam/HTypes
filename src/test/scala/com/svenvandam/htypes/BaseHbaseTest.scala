@@ -27,6 +27,4 @@ trait BaseHbaseTest extends FunSuiteLike with BeforeAndAfterAll with LazyLogging
     val name = UUID.randomUUID().toString
     hBaseUtility.createTable(TableName.valueOf(name), families.map(_.getBytes), maxValues)
   }
-
-  implicit def strToBytes(str: String): Array[Byte] = str.getBytes
 }

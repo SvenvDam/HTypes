@@ -7,9 +7,9 @@ import org.apache.hadoop.hbase.client.Result
 
 object ResultUtils {
 
-  implicit private val cellOrdering = new Ordering[Cell] {
-    override def compare(x: Cell, y: Cell) =
-      x.getTimestamp.compare(y.getTimestamp)
+  // we want to process values oldest to newest
+  implicit private val longOrdering = new Ordering[Long] {
+    def compare(x: Long, y: Long) = y compare x
   }
 
   def as[T](result: Result)(implicit decoder: RowDecoder[T]): Iterable[(T, Long)] = {
@@ -19,8 +19,8 @@ object ResultUtils {
       .groupBy(_.getTimestamp)
       .toSeq
       .sortBy(_._1)
-      .scanLeft[(Map[Column, CellValue], Long)]((Map.empty, 0)) {
-        case ((columns, _), (timestamp, newCells)) =>
+      .scanRight[(Map[Column, CellValue], Long)]((Map.empty, 0)) {
+        case ((timestamp, newCells), (columns, _)) =>
           val newColumns = newCells.map(getColumnAndValueFromCell)
 
           (columns ++ newColumns, timestamp)

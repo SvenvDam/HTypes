@@ -12,4 +12,7 @@ object Codec {
     def decode(a: A): Option[B] = f(a)
     def encode(b: B): A = g(b)
   }
+
+  def decode[A, B](a: A)(implicit decoder: Decoder[A, B]) = Decoder.decode[A, B](a)
+  def encode[A, B](b: B)(implicit encoder: Encoder[A, B]) = Encoder.encode(b)
 }

@@ -12,4 +12,7 @@ object Decoder {
   def apply[A, B](f: A => Option[B]): Decoder[A, B] = new Decoder[A, B] {
     def decode(a: A): Option[B] = f(a)
   }
+
+  def decode[A, B](a: A)(implicit decoder: Decoder[A, B]): Option[B] =
+    decoder.decode(a)
 }

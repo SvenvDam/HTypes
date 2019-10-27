@@ -12,4 +12,7 @@ object Encoder {
   def apply[A, B](f: B => A): Encoder[A, B] = new Encoder[A, B] {
     def encode(b: B): A = f(b)
   }
+
+  def encode[A, B](b: B)(implicit encoder: Encoder[A, B]): A =
+    encoder.encode(b)
 }

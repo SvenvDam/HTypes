@@ -14,15 +14,15 @@ class TableSyntaxTest extends BaseHbaseTest {
     import scala.concurrent.ExecutionContext.Implicits.global
 
     val table = getTable()
-    val put = new Put("r1").addColumn("cf1", "c1", "v1")
+    val put = new Put("r1".getBytes).addColumn("cf1".getBytes, "c1".getBytes, "v1".getBytes)
     table.put(put)
-    val scan = new Scan().addColumn("cf1", "c1")
+    val scan = new Scan().addColumn("cf1".getBytes, "c1".getBytes)
 
     val scanResult = Await.result(table.getScannerAsync(scan), 3 seconds)
     val res = scanResult.asScala.head
 
     Bytes.toString(res.getRow) shouldBe "r1"
-    Bytes.toString(res.getValue("cf1", "c1")) shouldBe "v1"
+    Bytes.toString(res.getValue("cf1".getBytes, "c1".getBytes)) shouldBe "v1"
   }
 
 }

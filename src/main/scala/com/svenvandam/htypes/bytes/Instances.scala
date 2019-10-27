@@ -9,6 +9,8 @@ trait Instances {
   implicit val intByteCodec = ByteCodec[Int](Bytes.toInt, Bytes.toBytes)
   implicit val longByteCodec = ByteCodec[Long](Bytes.toLong, Bytes.toBytes)
   implicit val floatByteCodec = ByteCodec[Float](Bytes.toFloat, Bytes.toBytes)
+  implicit val doubleByteCodec = ByteCodec[Double](Bytes.toDouble, Bytes.toBytes)
+  implicit val shortByteCodec = ByteCodec[Short](Bytes.toShort, Bytes.toBytes)
 }
 
 object Instances extends Instances
