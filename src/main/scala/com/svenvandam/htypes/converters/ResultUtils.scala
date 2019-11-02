@@ -12,7 +12,15 @@ object ResultUtils {
     def compare(x: Long, y: Long) = y compare x
   }
 
-  def as[T](result: Result)(implicit decoder: RowDecoder[T]): Iterable[(T, Long)] = {
+  /**
+    * Converts a Result to an Iterable of decoded form A and timestamp.
+    * The returned Iterable will be ordered from new to old.
+    * @param result a Result containing  data from HBase
+    * @param decoder RowDecoder instance to construct an A from a Row
+    * @tparam A the type to be decoded to
+    * @return Iterable, ordered from new to old, containing decoded objects
+    */
+  def as[A](result: Result)(implicit decoder: RowDecoder[A]): Iterable[(A, Long)] = {
     val row = result.getRow
     result
       .rawCells
@@ -30,8 +38,8 @@ object ResultUtils {
           (decoder.decode(Row(row, columns)), timestamp)
       }
       .flatMap {
-        case (Some(value), timestamp) => List((value, timestamp))
-        case _                        => List.empty
+        case (Some(value), timestamp) => Iterable((value, timestamp))
+        case _                        => Iterable.empty
       }
   }
 

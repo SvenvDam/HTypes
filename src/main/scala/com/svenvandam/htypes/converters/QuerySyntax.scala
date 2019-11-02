@@ -1,7 +1,6 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.hbase.{ColumnEncoder, RowEncoder}
-import com.svenvandam.htypes.model.CellValue
 import org.apache.hadoop.hbase.client.{Delete, Get, Put, Scan}
 
 trait QuerySyntax {
