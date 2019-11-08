@@ -12,7 +12,7 @@ It adds two improvements to the existing API:
 ## Installation
 
 ```sbtshell
-libraryDependencies += "com.svenvandam" %% "htypes" % "0.1"
+libraryDependencies += "com.svenvandam" %% "htypes" % "0.2"
 ```
 
 ## Example
