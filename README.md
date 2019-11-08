@@ -19,6 +19,7 @@ libraryDependencies += "com.svenvandam" %% "htypes" % "0.1"
 
 ```scala
 import com.svenvandam.htypes.Implicits._
+import com.svenvandam.htypes.async.FutureAsyncBackend
 import com.svenvandam.htypes.model._
 import com.svenvandam.htypes.hbase.RowCodec
 import com.svenvandam.htypes.converters.{PutUtils, GetUtils}
@@ -26,7 +27,12 @@ import org.apache.hadoop.hbase.client.{Connection, Put, Scan}
 import org.apache.hadoop.hbase._
 import scala.concurrent.Future
 
+
+// an example type we'll be encoding and decoding
+
 case class User(id: String, name: String, age: Int)
+
+// typeclass instance for User to en/decode it to an HBase compatible format
 
 implicit val userCodec = new RowCodec[User] {
   private val ageColumn = Column("profile", "age")
@@ -54,16 +60,30 @@ implicit val userCodec = new RowCodec[User] {
   } yield User(id, name, age)
 }
 
+// you'll have to do this youself
+
 val conn: Connection = getConnection()
 
 val table = conn.getTable(TableName.valueOf("MyTable"))
 
+// a user gets automatically encoded to an HBase compatible form and stored in a Put query
+
 val put = PutUtils.createFrom(User("id123", "Alice", 30))
+
+// HTypes lets you execute queries asynchronous
+// You have to define a backend to execute your query in (Future, Task, IO, etc)
+// An AsyncBackend instance for Future is provided by HTypes
+
+import scala.concurrent.ExecutionContext.Implicits.global
+implicit val asyncBackend = FutureAsyncBackend()
 
 val f: Future[Unit] = table.putAsync(put)
 
+// Automatically scan all columns associated with User
 
 val scan = new Scan().from[User]
+
+// Automatically convert scan result to a series of time-versioned User's
 
 val futureScanResult = table.getScannerAsync(scan).as[User]
 

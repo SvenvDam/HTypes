@@ -1,22 +1,21 @@
 package com.svenvandam.htypes.async
 
 import org.apache.hadoop.hbase.client._
-import scala.concurrent.{ExecutionContext, Future}
 
 trait TableSyntax {
 
   implicit class TableOps(table: Table) {
 
-    def getScannerAsync(scan: Scan)(implicit ec: ExecutionContext): Future[ResultScanner] =
+    def getScannerAsync[A[_]](scan: Scan)(implicit backend: AsyncBackend[A]): A[ResultScanner] =
       TableUtils.scanAsync(table)(scan)
 
-    def getAsync(get: Get)(implicit ec: ExecutionContext): Future[Result] =
+    def getAsync[A[_]](get: Get)(implicit backend: AsyncBackend[A]): A[Result] =
       TableUtils.getAsync(table)(get)
 
-    def putAsync(put: Put)(implicit ec: ExecutionContext): Future[Unit] =
+    def putAsync[A[_]](put: Put)(implicit backend: AsyncBackend[A]): A[Unit] =
       TableUtils.putAsync(table)(put)
 
-    def deleteAsync(delete: Delete)(implicit ec: ExecutionContext): Future[Unit] =
+    def deleteAsync[A[_]](delete: Delete)(implicit backend: AsyncBackend[A]): A[Unit] =
       TableUtils.deleteAsync(table)(delete)
   }
 }

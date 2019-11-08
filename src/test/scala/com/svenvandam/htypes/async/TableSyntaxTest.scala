@@ -12,6 +12,7 @@ class TableSyntaxTest extends BaseHbaseTest {
 
   test("it should wraps scan results in future") {
     import scala.concurrent.ExecutionContext.Implicits.global
+    implicit val backend = FutureAsyncBackend()
 
     val table = getTable()
     val put = new Put("r1".getBytes).addColumn("cf1".getBytes, "c1".getBytes, "v1".getBytes)
