@@ -1,15 +1,15 @@
 package com.svenvandam.htypes.converters
 
-import com.svenvandam.htypes.hbase.{ColumnEncoder, RowEncoder}
+import com.svenvandam.htypes.hbase.{RowDecoder, RowEncoder}
 import org.apache.hadoop.hbase.client.{Delete, Get, Put, Scan}
 
 trait QuerySyntax {
   implicit class GetOps(get: Get) {
-    def from[T](implicit classEncoder: ColumnEncoder[T]): Get = GetUtils.from[T](get)
+    def from[T](implicit decoder: RowDecoder[T]): Get = GetUtils.from[T](get)
   }
 
   implicit class ScanOps(scan: Scan) {
-    def from[T](implicit classEncoder: ColumnEncoder[T]): Scan = ScanUtils.from[T](scan)
+    def from[T](implicit decoder: RowDecoder[T]): Scan = ScanUtils.from[T](scan)
   }
 
   implicit class PutOps(put: Put) {

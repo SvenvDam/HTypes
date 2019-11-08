@@ -1,35 +1,16 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.BaseHbaseTest
-import com.svenvandam.htypes.hbase.RowDecoder
-import com.svenvandam.htypes.model.{Column, Row}
 import org.apache.hadoop.hbase.client.{Get, Put, Scan}
 import org.scalatest.Matchers._
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import com.svenvandam.htypes.bytes.Instances._
-import com.svenvandam.htypes.bytes.ByteSyntax._
 import org.apache.hadoop.hbase.util.Bytes
+import com.svenvandam.htypes.TestTypes._
 
 class ResultSyntaxTest extends BaseHbaseTest {
   import ResultSyntax._
-  import ResultSyntaxTest._
-
-  implicit val userDecoder = new RowDecoder[User] {
-    def decode(row: Row): Option[User] =
-      for {
-        id       <- row.key.as[String]
-        nameCell <- row.values.get(Column("profile", "name"))
-        name     <- nameCell.value.as[String]
-        ageCell  <- row.values.get(Column("profile", "age"))
-        age      <- ageCell.value.as[Int]
-      } yield User(
-        id,
-        name,
-        age
-      )
-  }
 
   test("it should construct a user from a Result") {
     val table = getTable(families = Array("profile"))
@@ -110,8 +91,4 @@ class ResultSyntaxTest extends BaseHbaseTest {
     )
 
   }
-}
-
-object ResultSyntaxTest {
-  case class User(id: String, name: String, age: Int)
 }

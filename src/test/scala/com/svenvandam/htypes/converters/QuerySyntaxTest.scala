@@ -1,34 +1,13 @@
 package com.svenvandam.htypes.converters
 
 import com.svenvandam.htypes.BaseHbaseTest
-import com.svenvandam.htypes.hbase.{ColumnEncoder, RowEncoder}
-import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import org.apache.hadoop.hbase.client.{Get, Put, Scan}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
-import com.svenvandam.htypes.bytes.Instances._
+import com.svenvandam.htypes.TestTypes._
 
 class QuerySyntaxTest extends BaseHbaseTest {
   import QuerySyntax._
-  import QuerySyntaxTest._
-
-  implicit val userEncoder = new RowEncoder[User] {
-    override def encode(user: User): Row =
-      Row(
-        user.id,
-        Map(
-          Column("profile", "name") -> CellValue(user.name, None),
-          Column("profile", "age") -> CellValue(user.age, None)
-        )
-      )
-  }
-
-  implicit val userClassEncoder = new ColumnEncoder[User] {
-    def getColumns = Set(
-      Column("profile", "name"),
-      Column("profile", "age")
-    )
-  }
 
   test("it should encode a User to a Put") {
     val table = getTable(families = Array("profile"))
@@ -91,8 +70,4 @@ class QuerySyntaxTest extends BaseHbaseTest {
     val result = table.get(get)
     result.getValue("profile".getBytes, "name".getBytes) shouldBe "Alice".getBytes
   }
-}
-
-object QuerySyntaxTest {
-  case class User(id: String, name: String, age: Int)
 }
