@@ -4,19 +4,34 @@ import org.apache.hadoop.hbase.client.{Delete, Get, Put, Scan}
 
 trait QuerySyntax {
   implicit class GetOps(get: Get) {
-    def from[T](implicit decoder: RowDecoder[T]): Get = GetUtils.from[T](get)
+
+    /**
+      * Bind all columns associated with type `A` to this [[Get]].
+      */
+    def addColumnsFrom[T](implicit decoder: RowDecoder[T]): Get = GetUtils.addColumns[T](get)
   }
 
   implicit class ScanOps(scan: Scan) {
-    def from[T](implicit decoder: RowDecoder[T]): Scan = ScanUtils.from[T](scan)
+
+    /**
+      * Bind all columns associated with type `A` to this [[Scan]].
+      */
+    def addColumnsFrom[T](implicit decoder: RowDecoder[T]): Scan = ScanUtils.addColumns[T](scan)
   }
 
   implicit class PutOps(put: Put) {
-    def from[T](t: T)(implicit encoder: RowEncoder[T]): Put = PutUtils.from(put)(t)
+
+    /**
+      * Bind all information of an `A` to this [[Put]].
+      */
+    def addValuesFrom[T](t: T)(implicit encoder: RowEncoder[T]): Put = PutUtils.addValues(put)(t)
   }
 
+  /**
+    * Bind all columns associated with type `A` to this [[Delete]].
+    */
   implicit class DeleteOps(delete: Delete) {
-    def from[T](t: T)(implicit encoder: RowEncoder[T]): Delete = DeleteUtils.from(delete)(t)
+    def addColumnsFrom[T](t: T)(implicit encoder: RowEncoder[T]): Delete = DeleteUtils.addColumns(delete)(t)
   }
 }
 

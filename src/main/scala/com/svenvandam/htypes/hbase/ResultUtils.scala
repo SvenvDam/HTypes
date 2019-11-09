@@ -12,14 +12,10 @@ object ResultUtils {
   }
 
   /**
-    * Converts a Result to an Iterable of decoded form A and timestamp.
-    * The returned Iterable will be ordered from new to old.
-    * @param result a Result containing  data from HBase
-    * @param decoder RowDecoder instance to construct an A from a Row
-    * @tparam A the type to be decoded to
-    * @return Iterable, ordered from new to old, containing decoded objects
+    * Converts a [[Result]] to a [[Seq]] of decoded form A and timestamp.
+    * The returned sequence will be ordered from new to old.
     */
-  def as[A](result: Result)(implicit decoder: RowDecoder[A]): Iterable[(A, Long)] = {
+  def as[A](result: Result)(implicit decoder: RowDecoder[A]): Seq[(A, Long)] = {
     val row = result.getRow
     result
       .rawCells

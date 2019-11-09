@@ -3,9 +3,6 @@ package com.svenvandam.htypes.converters
 import com.svenvandam.htypes.BaseHbaseTest
 import org.apache.hadoop.hbase.client.{Get, Put, Scan}
 import org.scalatest.Matchers._
-import scala.concurrent.{Await, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 import org.apache.hadoop.hbase.util.Bytes
 import com.svenvandam.htypes.TestTypes._
 
@@ -21,18 +18,6 @@ class ResultSyntaxTest extends BaseHbaseTest {
     )
 
     table.get(new Get("abc".getBytes)).as[User] shouldBe List((User("abc", "Alice", 24), 1))
-  }
-
-  test("it should construct a user from a Future[Result]") {
-    val table = getTable(families = Array("profile"))
-    table.put(
-      new Put("abc".getBytes)
-        .addColumn("profile".getBytes, "name".getBytes, 1, "Alice".getBytes)
-        .addColumn("profile".getBytes, "age".getBytes, 1, Bytes.toBytes(24))
-    )
-
-    val result = Await.result(Future(table.get(new Get("abc".getBytes))).as[User], 1 seconds)
-    result shouldBe List((User("abc", "Alice", 24), 1))
   }
 
   test("it should handle missing data in Result") {

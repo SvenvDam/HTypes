@@ -51,7 +51,7 @@ class QuerySyntaxTest extends BaseHbaseTest {
         .addColumn("profile".getBytes, "age".getBytes, Bytes.toBytes(24))
     )
 
-    val scan = new Scan().from[User]
+    val scan = new Scan().addColumnsFrom[User]
 
     val result = table.getScanner(scan).asScala.head
     result.getValue("profile".getBytes, "name".getBytes) shouldBe "Alice".getBytes
@@ -66,7 +66,7 @@ class QuerySyntaxTest extends BaseHbaseTest {
         .addColumn("profile".getBytes, "age".getBytes, Bytes.toBytes(24))
     )
 
-    val get = new Get("abc".getBytes).from[User]
+    val get = new Get("abc".getBytes).addColumnsFrom[User]
 
     val result = table.get(get)
     result.getValue("profile".getBytes, "name".getBytes) shouldBe "Alice".getBytes

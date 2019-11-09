@@ -6,19 +6,14 @@ import org.apache.hadoop.hbase.client.Delete
 object DeleteUtils {
 
   /**
-    * Bind all information of an object to a Delete query.
+    * Bind all information of an object to a [[Delete]] query.
     * Deletes a single version.
-    * If timestamp is provided in the CellValue, deletion happens at this version.
+    * If timestamp is provided in the [[CellValue]], deletion happens at this version.
     * If no timestamp is provided, most recent version is deleted.
-    * @param delete Delete query to bind columns to
-    * @param t Object to be deleted
-    * @param encoder Encoder to encode t to a Row
-    * @tparam T Type to be encoded to Row
-    * @return Delete query with all columns bound to it
     */
-  def from[T](delete: Delete)(t: T)(implicit encoder: RowEncoder[T]): Delete =
+  def addColumns[A](delete: Delete)(a: A)(implicit encoder: RowEncoder[A]): Delete =
     encoder
-      .encode(t)
+      .encode(a)
       .values
       .foldLeft(delete) {
         case (d, (col, CellValue(_, Some(timestamp)))) =>
@@ -28,14 +23,10 @@ object DeleteUtils {
       }
 
   /**
-    * Creates a new Delete query and binds all information of an object to it.
-    * @param t  Object to be deleted
-    * @param encoder Encoded to encode t to a Row
-    * @tparam T Type to be encoded to Row
-    * @return new Delete query with all columns bound to it
+    * Creates a new [[Delete]] query and binds all information of an object to it.
     */
-  def createFrom[T](t: T)(implicit encoder: RowEncoder[T]): Delete = {
-    val row = encoder.encode(t)
-    from(new Delete(row.key))(t)
+  def createFrom[A](a: A)(implicit encoder: RowEncoder[A]): Delete = {
+    val row = encoder.encode(a)
+    addColumns(new Delete(row.key))(a)
   }
 }

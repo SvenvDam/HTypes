@@ -6,14 +6,9 @@ import org.apache.hadoop.hbase.client.Put
 object PutUtils {
 
   /**
-    * Bind all information of an A to a Put query
-    * @param put the Put query to bind info to
-    * @param a object of type A containing info that must be stored
-    * @param encoder RowEncoder instance for type A
-    * @tparam A the type of the object to be encoded and stored
-    * @return Put query with info bound to it
+    * Bind all information of an `A` to a [[Put]] query
     */
-  def from[A](put: Put)(a: A)(implicit encoder: RowEncoder[A]): Put =
+  def addValues[A](put: Put)(a: A)(implicit encoder: RowEncoder[A]): Put =
     encoder
       .encode(a)
       .values
@@ -25,14 +20,10 @@ object PutUtils {
       }
 
   /**
-    * Creates new Put query and binds all info of t to it.
-    * @param a object of type A containing info that must be stored
-    * @param encoder RowEncoder instance for type A
-    * @tparam A the type of the object to be encoded and stored
-    * @return new Put query with info bound to it
+    * Creates new [[Put]] query and binds all info of an `A` to it.
     */
   def createFrom[A](a: A)(implicit encoder: RowEncoder[A]): Put = {
     val row = encoder.encode(a)
-    from(new Put(row.key))(a)
+    addValues(new Put(row.key))(a)
   }
 }
