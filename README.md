@@ -174,7 +174,7 @@ def decode(row: Row): Option[UserInfo] = for {
 
 val userInfoDecoder = RowDecoder(decode, Set(productColumn))
 
-val userWithInfoDecoder = userCodec.combine(
+val userWithInfoDecoder: RowDecoder[UserWithInfo] = userCodec.combine(
   userInfoDecoder, 
   (user: User, info: UserInfo) => UserWithInfo(user.id, user.name, user.age, info.lastBoughtItem)
 )
