@@ -11,7 +11,7 @@ trait ResultSyntax extends ScalaConverter {
       * Decode the values in [[Result]] to a sequence of time-ordered values of type `A`.
       * Each timed value represents what the object looked like at that point in time.
       */
-    def as[T](implicit decoder: RowDecoder[T]): Iterable[(T, Long)] = ResultUtils.as(res)
+    def as[T](implicit decoder: RowDecoder[T]): Seq[(T, Long)] = ResultUtils.as(res)
   }
 
   implicit class ResultScannerOps(res: ResultScanner) {
@@ -21,8 +21,8 @@ trait ResultSyntax extends ScalaConverter {
       * There is one sequence for each row in the result.
       * Each timed value represents what the object looked like at that point in time.
       */
-    def as[T](implicit decoder: RowDecoder[T]): Iterable[Iterable[(T, Long)]] =
-      res.map(_.as[T])
+    def as[T](implicit decoder: RowDecoder[T]): Seq[Seq[(T, Long)]] =
+      res.toSeq.map(_.as[T])
   }
 }
 
