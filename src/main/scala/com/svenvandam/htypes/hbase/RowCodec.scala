@@ -8,6 +8,9 @@ trait RowCodec[A] extends RowDecoder[A] with RowEncoder[A] { self =>
 
   def iflatMap[B](f: B => A, g: A => Option[B], newColumns: Set[Column]): RowCodec[B] =
     RowCodec.from(self.contramap(f), self.flatMap(g, newColumns))
+
+  def combine[B, C](that: RowCodec[B], f: C => (A, B), g: (A, B) => C): RowCodec[C] =
+    RowCodec.from(self.combine(that, f), self.combine(that, g))
 }
 
 object RowCodec {

@@ -15,6 +15,8 @@ trait RowDecoder[A] extends Decoder[Row, A] { self =>
     self.decode(_).flatMap(f),
     self.getColumns ++ newColumns
   )
+
+  def combine[B, C](that: RowDecoder[B], f: (A, B) => C): RowDecoder[C] = RowDecoder.combine(self, that, f)
 }
 
 object RowDecoder {
@@ -22,4 +24,13 @@ object RowDecoder {
     def decode(row: Row): Option[A] = f(row)
     def getColumns = columns
   }
+
+  def combine[A, B, C](left: RowDecoder[A], right: RowDecoder[B], f: (A, B) => C): RowDecoder[C] = RowDecoder(
+    (row: Row) =>
+      for {
+        l <- left.decode(row)
+        r <- right.decode(row)
+      } yield f(l, r),
+    left.getColumns ++ right.getColumns
+  )
 }
