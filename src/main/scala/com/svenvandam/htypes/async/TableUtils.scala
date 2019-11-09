@@ -3,11 +3,8 @@ package com.svenvandam.htypes.async
 object TableUtils {
 
   /**
-    * Execute a query asynchronously.
+    * Execute a query and wrap it in an effect wrapper `E` using [[AsyncBackend]].
     *
-    * @param query the query to execute
-    * @param run function which performs the query
-    * @param backend instance of AsyncBackend to wrap effect
     * @tparam Q query type
     * @tparam R result type
     * @tparam E effect wrapper type

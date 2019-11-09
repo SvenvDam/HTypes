@@ -2,9 +2,11 @@ package com.svenvandam.htypes.bytes
 
 import org.apache.hadoop.hbase.util.Bytes
 
-trait Instances {
+/**
+  * [[ByteEncoder]] and [[ByteDecoder]] instances for primitives.
+  */
+trait ByteCodecInstances {
   implicit val identityByteCodec = ByteCodec.safeApply[Array[Byte]](identity, identity)
-
   implicit val stringByteCodec = ByteCodec.safeApply[String](Bytes.toBytes, Bytes.toString)
   implicit val boolByteCodec = ByteCodec.safeApply[Boolean](Bytes.toBytes, Bytes.toBoolean)
   implicit val intByteCodec = ByteCodec.safeApply[Int](Bytes.toBytes, Bytes.toInt)
@@ -14,4 +16,4 @@ trait Instances {
   implicit val shortByteCodec = ByteCodec.safeApply[Short](Bytes.toBytes, Bytes.toShort)
 }
 
-object Instances extends Instances
+object ByteCodecInstances extends ByteCodecInstances
