@@ -1,21 +1,21 @@
 package com.svenvandam.htypes.codec
 
 /**
-  * Typeclass describing decoding behaviour
-  * @tparam A encoded form, type to be decoded
-  * @tparam B decoded form, resulting type after decoding
+  * A type class that provides a way to produce a decoded value of type `B` from an `A` value.
   */
 private[htypes] trait Decoder[A, B] { self =>
 
   /**
-    * Performs decoding step which might possibly fail
-    * @param a encoded object
-    * @return Some(decoded object) if decoding is successful, else None
+    * Produce a `B` from an `A` which could fail.
     */
   def decode(a: A): Option[B]
 }
 
 object Decoder {
+
+  /**
+    * Produce a `B` from an `A` which could fail.
+    */
   def decode[A, B](a: A)(implicit decoder: Decoder[A, B]): Option[B] =
     decoder.decode(a)
 }
