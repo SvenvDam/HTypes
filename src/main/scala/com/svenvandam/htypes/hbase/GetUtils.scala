@@ -1,6 +1,5 @@
-package com.svenvandam.htypes.converters
+package com.svenvandam.htypes.hbase
 
-import com.svenvandam.htypes.hbase.RowDecoder
 import org.apache.hadoop.hbase.client.Get
 
 object GetUtils {

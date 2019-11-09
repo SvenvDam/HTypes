@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.util.Bytes
 import com.svenvandam.htypes.TestTypes._
 
 class ResultSyntaxTest extends BaseHbaseTest {
-  import ResultSyntax._
+  import com.svenvandam.htypes.hbase.ResultSyntax._
 
   test("it should construct a user from a Result") {
     val table = getTable(families = Array("profile"))

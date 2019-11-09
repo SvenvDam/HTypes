@@ -5,9 +5,10 @@ import org.apache.hadoop.hbase.client.{Get, Put, Scan}
 import org.apache.hadoop.hbase.util.Bytes
 import org.scalatest.Matchers._
 import com.svenvandam.htypes.TestTypes._
+import com.svenvandam.htypes.hbase.{DeleteUtils, PutUtils}
 
 class QuerySyntaxTest extends BaseHbaseTest {
-  import QuerySyntax._
+  import com.svenvandam.htypes.hbase.QuerySyntax._
 
   test("it should encode a User to a Put") {
     val table = getTable(families = Array("profile"))

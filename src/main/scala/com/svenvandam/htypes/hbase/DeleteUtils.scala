@@ -1,6 +1,5 @@
-package com.svenvandam.htypes.converters
+package com.svenvandam.htypes.hbase
 
-import com.svenvandam.htypes.hbase.RowEncoder
 import com.svenvandam.htypes.model.CellValue
 import org.apache.hadoop.hbase.client.Delete
 

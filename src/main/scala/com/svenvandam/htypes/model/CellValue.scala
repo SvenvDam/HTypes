@@ -1,6 +1,6 @@
 package com.svenvandam.htypes.model
 
-import com.svenvandam.htypes.codec.Encoder
+import com.svenvandam.htypes.bytes.ByteEncoder
 
 case class CellValue(value: Array[Byte], timestamp: Option[Long] = None) {
   override def equals(that: Any) = that match {
@@ -9,7 +9,7 @@ case class CellValue(value: Array[Byte], timestamp: Option[Long] = None) {
 }
 
 object CellValue {
-  def apply[A](value: A, timestamp: Option[Long])(implicit encoder: Encoder[Array[Byte], A]) =
+  def apply[A](value: A, timestamp: Option[Long])(implicit encoder: ByteEncoder[A]) =
     new CellValue(
       encoder.encode(value),
       timestamp

@@ -1,6 +1,5 @@
-package com.svenvandam.htypes.converters
+package com.svenvandam.htypes.hbase
 
-import com.svenvandam.htypes.hbase.RowDecoder
 import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import org.apache.hadoop.hbase.{Cell, CellUtil}
 import org.apache.hadoop.hbase.client.Result

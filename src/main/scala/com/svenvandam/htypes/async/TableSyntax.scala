@@ -7,16 +7,16 @@ trait TableSyntax {
   implicit class TableOps(table: Table) {
 
     def getScannerAsync[A[_]](scan: Scan)(implicit backend: AsyncBackend[A]): A[ResultScanner] =
-      TableUtils.scanAsync(table)(scan)
+      TableUtils.asyncQuery[Scan, ResultScanner, A](scan, table.getScanner)
 
     def getAsync[A[_]](get: Get)(implicit backend: AsyncBackend[A]): A[Result] =
-      TableUtils.getAsync(table)(get)
+      TableUtils.asyncQuery[Get, Result, A](get, table.get)
 
     def putAsync[A[_]](put: Put)(implicit backend: AsyncBackend[A]): A[Unit] =
-      TableUtils.putAsync(table)(put)
+      TableUtils.asyncQuery[Put, Unit, A](put, table.put)
 
     def deleteAsync[A[_]](delete: Delete)(implicit backend: AsyncBackend[A]): A[Unit] =
-      TableUtils.deleteAsync(table)(delete)
+      TableUtils.asyncQuery[Delete, Unit, A](delete, table.delete)
   }
 }
 

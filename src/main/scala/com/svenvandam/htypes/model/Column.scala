@@ -1,6 +1,6 @@
 package com.svenvandam.htypes.model
 
-import com.svenvandam.htypes.codec.Encoder
+import com.svenvandam.htypes.bytes.ByteEncoder
 
 case class Column(family: Array[Byte], qualifier: Array[Byte]) {
   override def equals(that: Any): Boolean = that match {
@@ -10,12 +10,7 @@ case class Column(family: Array[Byte], qualifier: Array[Byte]) {
 }
 
 object Column {
-  def apply[A, B](
-      family: A,
-      qualifier: B
-    )(implicit familyEncoder: Encoder[Array[Byte], A],
-      qualifierEnCoder: Encoder[Array[Byte], B]
-    ) =
+  def apply[A, B](family: A, qualifier: B)(implicit familyEncoder: ByteEncoder[A], qualifierEnCoder: ByteEncoder[B]) =
     new Column(
       familyEncoder.encode(family),
       qualifierEnCoder.encode(qualifier)

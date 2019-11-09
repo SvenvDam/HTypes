@@ -1,13 +1,15 @@
 [![Build Status](https://travis-ci.org/SvenvDam/HTypes.svg?branch=master)](https://travis-ci.org/SvenvDam/HTypes)
 
 # HTypes
-> A type-safe, asynchronous, lightweight Scala extension to the HBase API 
+> A type-safe, asynchronous, composable, lightweight Scala extension to the HBase API 
 
-HTypes is a simple Scala extension to the Apache HBase API.
-It adds two improvements to the existing API:
+HTypes is a simple Scala extension to the Apache HBase API with no dependencies.
+It assumes you have have the HBase client API available as a dependency in your project.
+It adds the following improvements to the Java API:
 
-* Asynchronous execution of I/O operations
-* Object-relation mapping (ORM)
+* Asynchronous execution of queries
+* Automatic conversion between objects and an encoded form
+* Automatic conversion between common primitive types and byte arrays (and the option to add more yourself)
 
 ## Installation
 
