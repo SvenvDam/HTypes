@@ -1,36 +1,36 @@
 package com.svenvandam.htypes
 
-import com.svenvandam.htypes.hbase.RowCodec
+import com.svenvandam.htypes.hbase.{RowDecoder, RowEncoder}
 import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import com.svenvandam.htypes.Implicits._
 
 object TestTypes {
 
+  val ageColumn = Column("profile", "age")
+  val nameColumn = Column("profile", "name")
+  val userColumns = Set(nameColumn, ageColumn)
+
   case class User(id: String, name: String, age: Int)
 
-  implicit val userCodec = new RowCodec[User] {
-    private val ageColumn = Column("profile", "age")
-    private val nameColumn = Column("profile", "name")
+  def decodeUser(row: Row): Option[User] = for {
+    id                      <- row.key.as[String]
+    CellValue(ageBytes, _)  <- row.values.get(ageColumn)
+    age                     <- ageBytes.as[Int]
+    CellValue(nameBytes, _) <- row.values.get(nameColumn)
+    name                    <- nameBytes.as[String]
+  } yield User(id, name, age)
 
-    def getColumns = Set(
-      ageColumn,
-      nameColumn
+  def encodeUser(timestamp: Option[Long])(user: User): Row = Row(
+    user.id,
+    Map(
+      ageColumn -> CellValue(user.age, timestamp),
+      nameColumn -> CellValue(user.name, timestamp)
     )
+  )
 
-    def encode(user: User): Row = Row(
-      user.id,
-      Map(
-        ageColumn -> CellValue(user.age, None),
-        nameColumn -> CellValue(user.name, None)
-      )
-    )
+  val userEncoderNoTimestamp = RowEncoder(encodeUser(None))
 
-    def decode(row: Row): Option[User] = for {
-      id                      <- row.key.as[String]
-      CellValue(ageBytes, _)  <- row.values.get(ageColumn)
-      age                     <- ageBytes.as[Int]
-      CellValue(nameBytes, _) <- row.values.get(nameColumn)
-      name                    <- nameBytes.as[String]
-    } yield User(id, name, age)
-  }
+  def userEncoderWithTimestamp(timestamp: Long) = RowEncoder(encodeUser(Some(timestamp)))
+
+  val userDecoder = RowDecoder(decodeUser, userColumns)
 }

@@ -27,11 +27,21 @@ trait QuerySyntax {
     def addValuesFrom[T](t: T)(implicit encoder: RowEncoder[T]): Put = PutUtils.addValues(put)(t)
   }
 
-  /**
-    * Bind all columns associated with type `A` to this [[Delete]].
-    */
   implicit class DeleteOps(delete: Delete) {
-    def addColumnsFrom[T](t: T)(implicit encoder: RowEncoder[T]): Delete = DeleteUtils.addColumns(delete)(t)
+
+    /**
+      * Bind all columns associated with type `A` to this [[Delete]].
+      * Deletes single version.
+      */
+    def addColumnsFromSingleVersion[T](t: T)(implicit encoder: RowEncoder[T]): Delete =
+      DeleteUtils.addColumnsSingleVersion(delete)(t)
+
+    /**
+      * Bind all columns associated with type `A` to this [[Delete]].
+      * Deletes all versions.
+      */
+    def addColumnsFromAllVersions[T](t: T)(implicit encoder: RowEncoder[T]): Delete =
+      DeleteUtils.addColumnsAllVersions(delete)(t)
   }
 }
 

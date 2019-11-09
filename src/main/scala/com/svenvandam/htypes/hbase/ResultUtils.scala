@@ -1,10 +1,11 @@
 package com.svenvandam.htypes.hbase
 
+import com.svenvandam.htypes.converters.ScalaConverter
 import com.svenvandam.htypes.model.{CellValue, Column, Row}
 import org.apache.hadoop.hbase.{Cell, CellUtil}
-import org.apache.hadoop.hbase.client.Result
+import org.apache.hadoop.hbase.client.{Result, ResultScanner}
 
-object ResultUtils {
+object ResultUtils extends ScalaConverter {
 
   // we want to process values oldest to newest
   implicit private val longOrdering = new Ordering[Long] {
@@ -15,7 +16,7 @@ object ResultUtils {
     * Converts a [[Result]] to a [[Seq]] of decoded form A and timestamp.
     * The returned sequence will be ordered from new to old.
     */
-  def as[A](result: Result)(implicit decoder: RowDecoder[A]): Seq[(A, Long)] = {
+  def resultAs[A](result: Result)(implicit decoder: RowDecoder[A]): Seq[(A, Long)] = {
     val row = result.getRow
     result
       .rawCells
@@ -37,6 +38,9 @@ object ResultUtils {
         case _                        => Iterable.empty
       }
   }
+
+  def resultScannerAs[A](resultScanner: ResultScanner)(implicit decoder: RowDecoder[A]): Seq[Seq[(A, Long)]] =
+    resultScanner.toSeq.map(resultAs[A])
 
   private def getColumnAndValueFromCell(cell: Cell) = {
     val column = Column(

@@ -29,7 +29,10 @@ object ByteDecoder {
     * Perform a possibly unsafe decoding and wrap nonfatal errors to the failure case.
     */
   def safeDecode[A](f: Array[Byte] => A)(a: Array[Byte]) = try {
-    Some(f(a))
+    if (a == null)
+      None
+    else
+      Some(f(a))
   } catch {
     case NonFatal(_)  => None
     case e: Throwable => throw e

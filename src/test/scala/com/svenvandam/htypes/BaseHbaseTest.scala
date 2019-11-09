@@ -1,6 +1,7 @@
 package com.svenvandam.htypes
 
 import java.util.UUID
+import com.svenvandam.htypes.bytes.ByteUtils
 import com.svenvandam.htypes.converters.ScalaConverter
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.hadoop.hbase.client.Table
@@ -23,8 +24,9 @@ trait BaseHbaseTest extends FunSuiteLike with BeforeAndAfterAll with LazyLogging
     logger.info("HBase test cluster stopped.")
   }
 
-  def getTable(families: Array[String] = Array("cf1"), maxValues: Int = 10): Table = {
+  def getTable(families: Seq[String] = Array("cf1"), maxValues: Int = 10): Table = {
+    import com.svenvandam.htypes.bytes.ByteCodecInstances.stringByteCodec
     val name = UUID.randomUUID().toString
-    hBaseUtility.createTable(TableName.valueOf(name), families.map(_.getBytes), maxValues)
+    hBaseUtility.createTable(TableName.valueOf(name), families.toArray.map(ByteUtils.toBytes(_)), maxValues)
   }
 }

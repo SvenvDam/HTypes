@@ -1,9 +1,8 @@
 package com.svenvandam.htypes.hbase
 
-import com.svenvandam.htypes.converters.ScalaConverter
 import org.apache.hadoop.hbase.client.{Result, ResultScanner}
 
-trait ResultSyntax extends ScalaConverter {
+trait ResultSyntax {
 
   implicit class ResultOps(res: Result) {
 
@@ -11,7 +10,7 @@ trait ResultSyntax extends ScalaConverter {
       * Decode the values in [[Result]] to a sequence of time-ordered values of type `A`.
       * Each timed value represents what the object looked like at that point in time.
       */
-    def as[T](implicit decoder: RowDecoder[T]): Seq[(T, Long)] = ResultUtils.as(res)
+    def as[T](implicit decoder: RowDecoder[T]): Seq[(T, Long)] = ResultUtils.resultAs(res)
   }
 
   implicit class ResultScannerOps(res: ResultScanner) {
@@ -22,7 +21,7 @@ trait ResultSyntax extends ScalaConverter {
       * Each timed value represents what the object looked like at that point in time.
       */
     def as[T](implicit decoder: RowDecoder[T]): Seq[Seq[(T, Long)]] =
-      res.toSeq.map(_.as[T])
+      ResultUtils.resultScannerAs(res)
   }
 }
 
