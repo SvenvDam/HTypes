@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/SvenvDam/HTypes.svg?branch=master)](https://travis-ci.org/SvenvDam/HTypes)
 
 # HTypes
-> A type-safe, asynchronous, composable, lightweight Scala extension to the HBase API 
+> A type-safe, asynchronous, composable Scala extension to the HBase Client API 
 
 HTypes is a simple Scala extension to the Apache HBase API with no dependencies.
 It assumes you have have the HBase client API available as a dependency in your project.
@@ -25,7 +25,7 @@ libraryDependencies += "com.svenvandam" %% "htypes" % "0.2"
 import com.svenvandam.htypes.Implicits._
 import com.svenvandam.htypes.model._
 import com.svenvandam.htypes.hbase._
-import com.svenvandam.htypes.hbase.{PutUtils, GetUtils}
+import com.svenvandam.htypes.hbase.query.{PutUtils, GetUtils}
 import org.apache.hadoop.hbase.client.{Connection, Put, Scan}
 import org.apache.hadoop.hbase._
 
@@ -90,16 +90,17 @@ for {
 
 ```
 
-### Async queries
+### Wrapping side-effects
 
 ```scala
-// HTypes lets you execute queries asynchronous
+// HTypes lets you execute queries in an effect wrapper
 // You have to define a backend to execute your query in (Future, Task, IO, etc)
-// An AsyncBackend instance for Future is provided by HTypes
+// An EffectBackend instance for Future is provided by HTypes
 
-import com.svenvandam.htypes.async.FutureAsyncBackend
+import com.svenvandam.htypes.effect.FutureEffectBackend
 import scala.concurrent.ExecutionContext.Implicits.global
-implicit val asyncBackend = FutureAsyncBackend()
+
+implicit val asyncBackend = FutureEffectBackend()
 
 val f: Future[Unit] = table.putAsync(put)
 
