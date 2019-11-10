@@ -1,5 +1,6 @@
-package com.svenvandam.htypes.hbase
+package com.svenvandam.htypes.hbase.query
 
+import com.svenvandam.htypes.hbase.RowDecoder
 import org.apache.hadoop.hbase.client.Scan
 
 object ScanUtils {

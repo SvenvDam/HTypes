@@ -1,4 +1,4 @@
-package com.svenvandam.htypes.hbase
+package com.svenvandam.htypes.hbase.result
 
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.TestTypes._
@@ -9,7 +9,7 @@ import org.scalatest.Matchers._
 
 class ResultUtilsTest extends BaseHbaseTest {
   import ResultUtilsTest._
-  import ResultUtils._
+  import com.svenvandam.htypes.hbase.result.ResultUtils._
 
   test("as should construct a sequence of objects ordered by timestamp from a Result") {
     implicit val decoder = userDecoder

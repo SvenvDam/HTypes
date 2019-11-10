@@ -1,4 +1,4 @@
-package com.svenvandam.htypes.hbase
+package com.svenvandam.htypes.hbase.query
 
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.Implicits._
@@ -9,7 +9,7 @@ import org.scalatest.Matchers._
 
 class PutUtilsTest extends BaseHbaseTest {
   import PutUtilsTest._
-  import PutUtils._
+  import com.svenvandam.htypes.hbase.query.PutUtils._
 
   test("createFrom should create a Put and add values to it") {
     implicit val encoder = userEncoderNoTimestamp

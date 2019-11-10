@@ -1,4 +1,4 @@
-package com.svenvandam.htypes.hbase
+package com.svenvandam.htypes.hbase.query
 
 import com.svenvandam.htypes.BaseHbaseTest
 import org.apache.hadoop.hbase.client.{Delete, Get, Put}
@@ -9,7 +9,7 @@ import org.scalatest.Matchers._
 
 class DeleteUtilsTest extends BaseHbaseTest {
   import DeleteUtilsTest._
-  import DeleteUtils._
+  import com.svenvandam.htypes.hbase.query.DeleteUtils._
 
   test("addColumnsSingleVersion should delete the most recent value") {
     implicit val encoder = userEncoderNoTimestamp

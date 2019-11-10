@@ -1,5 +1,6 @@
-package com.svenvandam.htypes.hbase
+package com.svenvandam.htypes.hbase.query
 
+import com.svenvandam.htypes.hbase.{RowDecoder, RowEncoder}
 import org.apache.hadoop.hbase.client.{Delete, Get, Put, Scan}
 
 trait QuerySyntax {

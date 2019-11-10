@@ -1,4 +1,4 @@
-package com.svenvandam.htypes.hbase
+package com.svenvandam.htypes.hbase.query
 
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.bytes.ByteUtils
@@ -8,7 +8,7 @@ import com.svenvandam.htypes.TestTypes._
 import org.scalatest.Matchers._
 
 class ScanUtilsTest extends BaseHbaseTest {
-  import ScanUtils._
+  import com.svenvandam.htypes.hbase.query.ScanUtils._
 
   test("addColumns should add columns to a Scan") {
     implicit val decoder = userDecoder

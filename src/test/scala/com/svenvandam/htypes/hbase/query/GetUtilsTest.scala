@@ -1,4 +1,4 @@
-package com.svenvandam.htypes.hbase
+package com.svenvandam.htypes.hbase.query
 
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.bytes.ByteUtils
@@ -8,7 +8,7 @@ import com.svenvandam.htypes.Implicits._
 import com.svenvandam.htypes.TestTypes._
 
 class GetUtilsTest extends BaseHbaseTest {
-  import GetUtils._
+  import com.svenvandam.htypes.hbase.query.GetUtils._
   test("addColumns should bind columns to a Get") {
     implicit val decoder = userDecoder
     val get = new Get(ByteUtils.toBytes("id"))
