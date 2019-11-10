@@ -21,14 +21,13 @@ class EffectUtilsTest extends BaseHbaseTest {
     val value = ByteUtils.toBytes("v1")
     val table = getTable(Seq("cf1"))
 
-    val putAsync = EffectUtils.wrap[Put, Unit, TestIO](table.put) _
+    val wrapPut = EffectUtils.wrap[Put, Unit, TestIO](table.put) _
 
-    val put = new Put(row)
-      .addColumn(family, qualifier, value)
+    val put = new Put(row).addColumn(family, qualifier, value)
 
     val get = new Get(row)
 
-    val putIO = putAsync(put) // construct IO, should not yet execute
+    val putIO = wrapPut(put) // construct IO, should not yet execute
 
     table.get(get).getValue(family, qualifier).as[String] shouldBe None // table should be empty at this point
 
