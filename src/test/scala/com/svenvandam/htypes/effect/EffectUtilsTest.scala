@@ -1,19 +1,14 @@
 package com.svenvandam.htypes.effect
 
-import com.svenvandam.htypes.BaseHbaseTest
+import com.svenvandam.htypes.{BaseHbaseTest, TestIO}
 import com.svenvandam.htypes.bytes.ByteUtils
-import org.apache.hadoop.hbase.client.{Get, Put}
+import org.apache.hadoop.hbase.client.{Put, Get}
 import com.svenvandam.htypes.Implicits._
 import org.scalatest.Matchers._
 
 class EffectUtilsTest extends BaseHbaseTest {
-  import EffectUtilsTest._
 
   test("wrap should wrap query execution in an effect wrapper") {
-    implicit val ioBackend = new EffectBackend[TestIO] {
-      def wrap[A](a: => A): TestIO[A] =
-        TestIO(() => a)
-    }
 
     val row = ByteUtils.toBytes("r1")
     val family = ByteUtils.toBytes("cf1")
@@ -36,11 +31,4 @@ class EffectUtilsTest extends BaseHbaseTest {
     table.get(get).getValue(family, qualifier).as[String] shouldBe Some("v1")
 
   }
-}
-
-object EffectUtilsTest {
-  case class TestIO[A](action: () => A) {
-    def run() = action()
-  }
-
 }
