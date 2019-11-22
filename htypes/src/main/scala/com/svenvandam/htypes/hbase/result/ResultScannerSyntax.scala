@@ -7,7 +7,7 @@ import com.svenvandam.htypes.stream.StreamBackend
 trait ResultScannerSyntax extends ScalaConverter {
   implicit class ResultScannerOps(scanner: ResultScanner) {
 
-    def consumeAs[A[_]](implicit backend: StreamBackend[A]): A[Result] =
+    def stream[A[_]](implicit backend: StreamBackend[A]): A[Result] =
       ResultScannerUtils.streamResults(scanner)
   }
 }

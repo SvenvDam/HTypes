@@ -1,5 +1,8 @@
 package com.svenvandam.htypes.stream
 
+/**
+  * Type class for Streams. Can be used to consume a [[org.apache.hadoop.hbase.client.ResultScanner]] as a stream.
+  */
 trait StreamBackend[A[_]] {
   def getStream[B](iterator: Iterator[B]): A[B]
 }

@@ -1,28 +1,38 @@
-name := "HTypes"
+import Dependencies._
 
-version := "0.3"
+version in ThisBuild := "0.3"
 
-scalaVersion := "2.13.0"
+scalaVersion in ThisBuild := "2.13.0"
 crossScalaVersions := Seq("2.13.0", "2.12.9", "2.11.12")
 
-val hBaseVersion = "2.2.0"
-val hadoopVersion = "2.8.5"
-
-scalacOptions ++= Seq(
+val compilerOptions = Seq(
   "-language:postfixOps",
   "-language:higherKinds"
 )
 
-parallelExecution in Test := false
+def createModule(
+    moduleName: String,
+    libDependencies: Seq[ModuleID] = Seq.empty,
+    projectDependencies: Seq[ProjectReference] = Seq.empty
+  ) = Project(id = moduleName, base = file(moduleName))
+  .dependsOn(projectDependencies.map(_ % "compile->compile;test->test"): _*)
+  .configs(IntegrationTest)
+  .settings(
+    name := moduleName,
+    libraryDependencies ++= libDependencies,
+    test in Test := (test in Test dependsOn
+      (projectDependencies.map(p => test in Test in p): _*)).value,
+    scalacOptions ++= compilerOptions,
+    parallelExecution in Test := false
+  )
 
-libraryDependencies ++= Seq(
-  "org.apache.hbase"           % "hbase-client"         % hBaseVersion  % Provided,
-  "com.typesafe.scala-logging" %% "scala-logging"       % "3.9.2"       % Test,
-  "org.scalatest"              %% "scalatest"           % "3.0.8"       % Test,
-  "org.apache.hadoop"          % "hadoop-common"        % hadoopVersion % Test,
-  "org.apache.hbase"           % "hbase-server"         % hBaseVersion  % Test,
-  "org.apache.hadoop"          % "hadoop-hdfs"          % hadoopVersion % Test,
-  "org.apache.hbase"           % "hbase-hadoop-compat"  % hBaseVersion  % Test,
-  "org.apache.hbase"           % "hbase-hadoop2-compat" % hBaseVersion  % Test,
-  "org.apache.hbase"           % "hbase-testing-util"   % hBaseVersion  % Test
-)
+lazy val root = (project in file("."))
+  .aggregate(
+    hTypesCore,
+    hTypesAkkaStream
+  )
+  .settings(skip in publish := true)
+
+lazy val hTypesCore = createModule("htypes", commonDependencies)
+
+lazy val hTypesAkkaStream = createModule("htypes-akka-stream", commonDependencies ++ akkaStream, Seq(hTypesCore))
