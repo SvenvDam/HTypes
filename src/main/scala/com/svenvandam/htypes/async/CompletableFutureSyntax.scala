@@ -5,7 +5,7 @@ import com.svenvandam.htypes.effect.EffectBackend
 
 trait CompletableFutureSyntax {
   implicit class CompletableSyntaxOps[A](f: => CompletableFuture[A]) {
-    def as[B[_]](implicit backend: EffectBackend[B]): B[A] = CompletableFutureUtils.interceptCompletableFuture(f)
+    def convertEffect[B[_]](implicit backend: EffectBackend[B]): B[A] = CompletableFutureUtils.interceptCompletableFuture(f)
   }
 }
 

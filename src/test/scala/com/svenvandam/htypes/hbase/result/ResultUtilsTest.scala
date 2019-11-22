@@ -3,7 +3,7 @@ package com.svenvandam.htypes.hbase.result
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.TestTypes._
 import com.svenvandam.htypes.bytes.ByteUtils
-import org.apache.hadoop.hbase.client.{Get, Put, Scan}
+import org.apache.hadoop.hbase.client.{Get, Put}
 import com.svenvandam.htypes.Implicits._
 import org.scalatest.Matchers._
 
@@ -40,24 +40,6 @@ class ResultUtilsTest extends BaseHbaseTest {
     resultAs[User](result) shouldBe Seq((alice, 2))
   }
 
-  test("resultScannerAs should construct multiple objects for a ScanResult") {
-    implicit val decoder = userDecoder
-    val table = getTable(families = Array("profile"))
-    table.put(
-      new Put(ByteUtils.toBytes("id"))
-        .addColumn(nameColumn.family, nameColumn.qualifier, 1, ByteUtils.toBytes(alice.name))
-        .addColumn(ageColumn.family, ageColumn.qualifier, 1, ByteUtils.toBytes(alice.age))
-    )
-    table.put(
-      new Put(ByteUtils.toBytes("id2"))
-        .addColumn(nameColumn.family, nameColumn.qualifier, 1, ByteUtils.toBytes(bob.name))
-        .addColumn(ageColumn.family, ageColumn.qualifier, 1, ByteUtils.toBytes(bob.age))
-    )
-
-    val result = table.getScanner(new Scan())
-
-    resultScannerAs[User](result).toSet shouldBe Set(Seq((bob, 1)), Seq((alice, 1)))
-  }
 }
 
 object ResultUtilsTest {

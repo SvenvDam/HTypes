@@ -10,14 +10,18 @@ class CompletableFutureSyntaxTest extends FunSuite {
   test("it should transform a CompletableFuture before its inner computations starts") {
     var x = 0
 
-    def completableFuture(i: Int): CompletableFuture[Void] =
-      CompletableFuture.runAsync(() => x = i)
+    val action = new Runnable {
+      override def run(): Unit = x = 1
+    }
 
-    val f = completableFuture(1).as[TestIO]
+    def completableFuture(i: Int): CompletableFuture[Void] =
+      CompletableFuture.runAsync(action)
+
+    val io = completableFuture(1).convertEffect[TestIO]
 
     x shouldBe 0
 
-    f.run()
+    io.run()
 
     x shouldBe 1
   }

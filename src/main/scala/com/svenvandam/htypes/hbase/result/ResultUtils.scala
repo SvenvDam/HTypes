@@ -40,9 +40,6 @@ object ResultUtils extends ScalaConverter {
       }
   }
 
-  def resultScannerAs[A](resultScanner: ResultScanner)(implicit decoder: RowDecoder[A]): Seq[Seq[(A, Long)]] =
-    resultScanner.toSeq.map(resultAs[A])
-
   private def getColumnAndValueFromCell(cell: Cell) = {
     val column = Column(
       CellUtil.cloneFamily(cell),
