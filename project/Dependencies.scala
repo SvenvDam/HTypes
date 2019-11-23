@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   val hBaseVersion = "2.2.0"
   val hadoopVersion = "2.8.5"
-  val akkaStreamVersion = "2.6.0"
+  val akkaStreamVersion = "2.5.26"
 
   lazy val commonDependencies = Seq(
     "org.apache.hbase"           % "hbase-client"         % hBaseVersion  % Provided,

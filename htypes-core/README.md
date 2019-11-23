@@ -14,7 +14,7 @@ It adds the following improvements to the Java API:
 ## Installation
 
 ```sbtshell
-libraryDependencies += "com.svenvandam" %% "htypes" % "0.3"
+libraryDependencies += "com.svenvandam" %% "htypes-core" % "0.5"
 ```
 
 ## Example

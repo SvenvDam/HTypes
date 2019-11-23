@@ -1,17 +1,17 @@
 package com.svenvandam.htypes.stream.akkastream
 
 import akka.actor.ActorSystem
-import akka.stream.Materializer
+import akka.stream.{Materializer, ActorMaterializer}
 import akka.stream.testkit.scaladsl.TestSink
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.bytes.ByteUtils
-import org.apache.hadoop.hbase.client.{Put, Result, Scan}
+import org.apache.hadoop.hbase.client.{Scan, Result, Put}
 import com.svenvandam.htypes.Implicits._
 
 class AkkaStreamBackendTest extends BaseHbaseTest {
   import AkkaStreamBackend._
   implicit val system = ActorSystem("AkkaStreamBackendTest")
-  implicit val mat = Materializer(system)
+  implicit val mat = ActorMaterializer()
 
   test("it should stream in Results from a ResultScanner") {
     val table = getTable(Seq("cf"))
