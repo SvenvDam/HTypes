@@ -16,7 +16,6 @@ def createModule(
     projectDependencies: Seq[ProjectReference] = Seq.empty
   ) = Project(id = moduleName, base = file(moduleName))
   .dependsOn(projectDependencies.map(_ % "compile->compile;test->test"): _*)
-  .configs(IntegrationTest)
   .settings(
     name := moduleName,
     libraryDependencies ++= libDependencies,
@@ -27,14 +26,22 @@ def createModule(
   )
 
 lazy val root = (project in file("."))
+  .settings(
+    name := "HTypes"
+  )
   .aggregate(
     hTypesCore,
-    hTypesAkkaStream
+    hTypesAkkaStream,
+    hTypesCatsEffect,
+    hTypesZIO
   )
   .settings(skip in publish := true)
 
-lazy val hTypesCore = createModule("htypes", commonDependencies)
+lazy val hTypesCore = createModule("htypes-core", commonDependencies)
 
 lazy val hTypesAkkaStream = createModule("htypes-akka-stream", commonDependencies ++ akkaStream, Seq(hTypesCore))
 
 lazy val hTypesCatsEffect = createModule("htypes-cats-effect", commonDependencies ++ catsEffect, Seq(hTypesCore))
+
+lazy val hTypesZIO = createModule("htypes-zio", commonDependencies ++ zio, Seq(hTypesCore))
+

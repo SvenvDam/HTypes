@@ -5,7 +5,7 @@ import akka.stream.Materializer
 import akka.stream.testkit.scaladsl.TestSink
 import com.svenvandam.htypes.BaseHbaseTest
 import com.svenvandam.htypes.bytes.ByteUtils
-import org.apache.hadoop.hbase.client.{Scan, Result, Put}
+import org.apache.hadoop.hbase.client.{Put, Result, Scan}
 import com.svenvandam.htypes.Implicits._
 
 class AkkaStreamBackendTest extends BaseHbaseTest {
