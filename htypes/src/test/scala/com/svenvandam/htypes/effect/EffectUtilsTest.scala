@@ -22,7 +22,7 @@ class EffectUtilsTest extends BaseHbaseTest {
 
     import TestIO.ioBackend
 
-    val putIO = EffectUtils.wrap(table.put(put)) // construct IO, should not yet execute
+    val putIO = EffectUtils.lift(table.put(put)) // construct IO, should not yet execute
 
     table.get(get).getValue(family, qualifier).as[String] shouldBe None // table should be empty at this point
 

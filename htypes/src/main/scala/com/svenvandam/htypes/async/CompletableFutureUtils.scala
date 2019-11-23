@@ -16,5 +16,5 @@ object CompletableFutureUtils {
     * Exceptions might be thrown here and should be handled!
     */
   def interceptCompletableFuture[A, B[_]](f: => CompletableFuture[A])(implicit backend: EffectBackend[B]): B[A] =
-    backend.wrap(f.get())
+    backend.lift(f.get())
 }

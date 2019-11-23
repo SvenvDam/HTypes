@@ -21,4 +21,12 @@ object Dependencies {
     "com.typesafe.akka" %% "akka-stream"         % akkaStreamVersion % Provided,
     "com.typesafe.akka" %% "akka-stream-testkit" % akkaStreamVersion % Test
   )
+
+  lazy val catsEffect = Seq(
+    "org.typelevel" %% "cats-effect" % "2.0.0" % Provided
+  )
+
+  lazy val zio = Seq(
+    "dev.zio" %% "zio" % "1.0.0-RC17" % Provided
+  )
 }

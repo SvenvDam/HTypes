@@ -36,3 +36,5 @@ lazy val root = (project in file("."))
 lazy val hTypesCore = createModule("htypes", commonDependencies)
 
 lazy val hTypesAkkaStream = createModule("htypes-akka-stream", commonDependencies ++ akkaStream, Seq(hTypesCore))
+
+lazy val hTypesCatsEffect = createModule("htypes-cats-effect", commonDependencies ++ catsEffect, Seq(hTypesCore))

@@ -7,7 +7,7 @@ import scala.concurrent.{blocking, ExecutionContext, Future}
   * Executes the effect in a thread provided by an [[ExecutionContext]].
   */
 case class FutureEffectBackend()(implicit ec: ExecutionContext) extends EffectBackend[Future] {
-  def wrap[A](a: => A) = Future {
+  def lift[A](a: => A) = Future {
     blocking {
       a
     }

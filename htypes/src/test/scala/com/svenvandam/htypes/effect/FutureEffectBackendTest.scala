@@ -13,7 +13,7 @@ class FutureEffectBackendTest extends FunSuite {
 
     var x = 0
 
-    val f = backend.wrap {
+    val f = backend.lift {
       Thread.sleep(1000)
       x = 1
     }

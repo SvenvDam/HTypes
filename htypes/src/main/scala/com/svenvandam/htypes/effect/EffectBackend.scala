@@ -5,5 +5,5 @@ package com.svenvandam.htypes.effect
   * Think of Future, Task, IO, etc...
   */
 trait EffectBackend[A[_]] {
-  def wrap[B](b: => B): A[B]
+  def lift[B](b: => B): A[B]
 }

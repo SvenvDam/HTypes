@@ -8,7 +8,7 @@ case class TestIO[A](action: () => A) {
 
 object TestIO {
   implicit val ioBackend = new EffectBackend[TestIO] {
-    def wrap[A](a: => A): TestIO[A] =
+    def lift[A](a: => A): TestIO[A] =
       TestIO(() => a)
   }
 }
