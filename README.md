@@ -102,7 +102,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 implicit val asyncBackend = FutureEffectBackend()
 
-val f: Future[Unit] = table.putAsync(put)
+val f: Future[Unit] = table.putEffect(put)
 
 f.foreach(_ => println("Put result!"))
 ```
